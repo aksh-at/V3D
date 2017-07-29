@@ -8,12 +8,18 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      debug: false
+      debug: false,
+      items: [{
+        type: 'circle',
+        cx: 20,
+        cy: 20,
+        radius: 20,
+      }],
     }
   }
 
   render() {
-    const { debug } = this.state;
+    const { debug, items } = this.state;
 
     return (
       <div
@@ -37,7 +43,7 @@ class App extends Component {
           <div className="webcam">
             <span>WEBCAM</span>
           </div>
-          <Sketch/>
+          <Sketch items={items}/>
           <div className="tools">
             TOOLS
           </div>
