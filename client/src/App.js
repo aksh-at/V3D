@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
+import { Sketch } from './components';
 import logo from './logo.svg';
 import './App.css';
 
@@ -36,9 +37,7 @@ class App extends Component {
           <div className="webcam">
             <span>WEBCAM</span>
           </div>
-          <div className="sketch">
-            SKETCH
-          </div>
+          <Sketch/>
           <div className="tools">
             TOOLS
           </div>
