@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import { Sketch } from './components';
+import { Sketch, ViewSelector } from './components';
 import io from 'socket.io-client';
 import './App.css';
 
-const socket = io('http://localhost:3001');
-socket.emit('frame', [1, 2, 'hello']);
 class App extends Component {
   constructor() {
     super();
@@ -17,11 +15,20 @@ class App extends Component {
         cy: 20,
         radius: 20,
       }],
+      view: null,
     }
+
+    this._onSelectView = this.onSelectView.bind(this);
+    this.socket = io('http://localhost:3001');
+  }
+
+  onSelectView(view) {
+    this.setState({view});
+    this.socket.emit('setview', view);
   }
 
   render() {
-    const { debug, items } = this.state;
+    const { debug, items, view } = this.state;
 
     return (
       <div
@@ -42,6 +49,10 @@ class App extends Component {
           debug: { debug ? 'ON' : 'OFF'}
         </a>
         <div className="main">
+          <ViewSelector
+            view={view}
+            onSelect={this._onSelectView}
+          />
           <div className="webcam">
             <span>WEBCAM</span>
           </div>
