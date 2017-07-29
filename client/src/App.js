@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { Sketch } from './components';
+import io from 'socket.io-client';
 import logo from './logo.svg';
 import './App.css';
 
+const socket = io('http://localhost:3001');
+socket.emit('frame', [1, 2, 'hello']);
 class App extends Component {
   constructor() {
     super();
