@@ -41,7 +41,7 @@ export class Webcam extends Component {
           const low = constraints[i][0];
           const high = constraints[i][1];
           const colorPart = hsl[i];
-          const margin = (i === 2) ? 0.05 : 0.02;
+          const margin = (i === 2) ? 0.10 : 0.03;
 
           if (low - margin > colorPart || high + margin < colorPart)
             return false;
@@ -62,6 +62,13 @@ export class Webcam extends Component {
 
       const selectedPoints = {};
       event.data.forEach(rect => {
+        context.strokeStyle = rect.color;
+        context.strokeRect(rect.x, rect.y, rect.width, rect.height);
+        context.font = '11px Helvetica';
+        context.fillStyle = "#fff";
+        context.fillText('x: ' + rect.x + 'px', rect.x + rect.width + 5, rect.y + 11);
+        context.fillText('y: ' + rect.y + 'px', rect.x + rect.width + 5, rect.y + 22);
+
         const x = rect.x + rect.width / 2;
         const y = rect.y + rect.height / 2;
         const color = rect.color;
@@ -102,7 +109,7 @@ export class Webcam extends Component {
       if (!point) return;
       const pointToSend = this.normalize(point)
       this.props.onSend && this.props.onSend(pointToSend);
-    });
+    }, 20);
   }
 
   componentWillUnmount() {
@@ -134,26 +141,20 @@ var colorSamples = {
 234 155 149
 `,
   purple: `
-107 62 125
-98 50 119
-117 78 130
-94 49 111
-134 96 146
-156 121 165
-99 60 111
-182 150 184
-215 189 216
-198 141 177
-168 114 149
-179 123 159
-189 133 169
-175 123 154
-111 82 100
-107 80 96
-106 78 97
-118 91 104
-113 86 102
+45 107 102
+45 104 102
+44 85 86
+35 55 57
+42 106 105
+47 119 114
+58 62 64
+40 52 53
+54 100 92
+34 44 44
+39 70 65
+68 88 85
 `,
+  /*
   yellow: `
 205 159 83
 215 164 71
@@ -166,7 +167,28 @@ var colorSamples = {
 240 198 65
 250 209 60
 211 164 60
-`
+`,*/
+  yellow: `
+    107 62 125
+    98 50 119
+    117 78 130
+    94 49 111
+    134 96 146
+    156 121 165
+    99 60 111
+    182 150 184
+    215 189 216
+    198 141 177
+    168 114 149
+    179 123 159
+    189 133 169
+    175 123 154
+    111 82 100
+    107 80 96
+    106 78 97
+    118 91 104
+    113 86 102
+    `,
 };
 
 function dist(p1, p2) {
