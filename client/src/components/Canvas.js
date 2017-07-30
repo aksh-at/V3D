@@ -30,10 +30,17 @@ export class Canvas extends Component {
     this.cameraQuaternion = new THREE.Quaternion()
       .setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
 
+    this.state.hardCodedItems = {
+      polygons: [[0.4, 0, 0, 0, 0, 0.2, 0, 0.3, 0, 0, 0.2, 0.3]],
+      spheres: [],
+      markers: [],
+      lines: [],
+      aid_spheres: [],
+    };
   }
 
   renderPointLight() {
-	const d = 20;
+    const d = 20;
     return (
 		  <directionalLight
         color={0xffffff}
@@ -86,16 +93,47 @@ export class Canvas extends Component {
     );
   }
 
-  renderPolygon(polygon) {
+  renderCube(offset) {
+    return (
+      <mesh rotation={this.state.cubeRotation}>
+        <boxGeometry
+          vertices={[new THREE.Vector3()]}
+          width={.5 - offset}
+          height={.5 + offset}
+          depth={.5 + 2 * offset}
+        />
+        <meshBasicMaterial
+          color={0x00ff00}
+        />
+      </mesh>
+    );
+  }
 
+  renderPolygon(polygon) {
+    console.log(polygon);
+    return (
+      <mesh 
+        castShadow
+        position={this.spherePosition}
+        rotation={this.state.cubeRotation}
+      >
+        <extrudeGeometry
+          vertices={polygon}
+          // shapes={new THREE.ShapeGeometry(polygon)}
+        />
+        <meshPhongMaterial
+          color={0x00ff00}
+        />
+      </mesh>
+    );
   }
 
   renderObjects(items) {
 	console.log(items);
     return (
 	  items.map(
-        item => (this['render' + item.type](item))
-      )
+      item => (this['render' + item.type](item))
+    )
 	);
   }
 
@@ -159,8 +197,8 @@ export class Canvas extends Component {
             color={0x505050}
           />
 
-          { this.renderObjects(items) }
           { this.renderPointLight() }
+          { this.renderObjects(items) }
 
         </scene>
       </React3>
