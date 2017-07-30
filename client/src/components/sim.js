@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import debounce from 'debounce';
-import classnames from 'classnames';
 import './sim.css';
 
 function getAbsoluteOffset(el) {
@@ -61,7 +59,7 @@ export class Sim extends Component {
 
   render() {
     const { width, height } = this.props;
-    const { color, hover, points } = this.state;
+    const { color, points } = this.state;
 
     return (
       <div className="sim">
