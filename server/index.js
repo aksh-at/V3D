@@ -3,8 +3,6 @@ import math from 'math';
 const server = require('http').createServer();
 const io = require('socket.io')(server);
 
-const modes = ["draw_polygon", "draw_sphere"];
-
 var polygons = [];
 var spheres = [];
 var currentMode = 0;
@@ -74,6 +72,11 @@ const views = {
 };
 
 function getLastPoint() {
+	return {
+		x: main.lastPoint.x,
+		y: main.lastPoint.y,
+		z: side.lastPoint.x,
+	}
 }
 
 function processCommand(type) {
@@ -88,17 +91,8 @@ function processCommand(type) {
 }
 
 function update() {
-  const points = [];
-  const { main, side } = views;
-  const numPoints = Math.min(main.points.length, side.points.length);
-  for(var i = 0; i < numPoints; i += 1) {
-    points.push({
-      x: main.points[i].x,
-      y: main.points[i].y,
-      z: side.points[i].z,
-    });
-  }
-  io.sockets.emit('points', points);
+  io.sockets.emit('polygons', polygons);
+  io.sockets.emit('spheres', spheres);
 }
 
 io.on('connection', function(client){
