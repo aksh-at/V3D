@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
-import { drawGrid, drawCircle } from '../canvas-utils';
 import React3 from 'react-three-renderer';
 import * as THREE from 'three';
+import { project, convert } from '../geometry';
 
 import './Canvas.css';
 
+/*
+ * testing project:
+console.log(
+  project(
+  {x:1,y:2,z:3},
+  {x:1,y:2,z:6},
+  {x:1,y:3,z:6},
+  {x:2,y:3,z:6},
+  )); // {x:1,y:2,z:6}
+  */
 export class Canvas extends Component {
-  static propTypes = {
-    width: React.PropTypes.number.isRequired,
-    height: React.PropTypes.number.isRequired,
-    items: React.PropTypes.object.isRequired,
-  };
-
   constructor(props, context) {
     super(props, context);
 
@@ -59,6 +63,8 @@ export class Canvas extends Component {
     this.spherePosition = new THREE.Vector3(0, 3, 0);
     this.cameraQuaternion = new THREE.Quaternion()
       .setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
+
+	this.polygons = [];
   }
 
   zoom(delta) {
@@ -75,8 +81,16 @@ export class Canvas extends Component {
     }));
   }
 
+  componentDidMount() {
+	console.log(this.polygons);
+	for(let i = 0; i<this.polygons.length; i++) {
+		console.log("normals wehee");
+		this.polygons[i].computeFaceNormals();
+	}
+  }
+
   renderPointLight() {
-    const d = 20;
+    const d = 200;
     return (
       <directionalLight
         color={0xffffff}
@@ -101,19 +115,65 @@ export class Canvas extends Component {
     );
   }
 
+  renderPolygon(item) {
+    item['color'] = 0x00ff00;
+
+	var vertices = [];
+	var faces = [];
+
+	function shift(i, j) {
+		return (i + j) % item.points.length;
+	}
+
+	for (let i = 0; i < item.points.length; i++) {
+		vertices.push(item.points[i]);
+		faces.push(new THREE.Face3(i, shift(i,1), shift(i,2)));
+		faces.push(new THREE.Face3(i, shift(i,2), shift(i,1)));
+	}
+
+    return (
+	<group>
+      <mesh 
+        castShadow
+      >
+        <geometry
+		  ref = { (r) => this.polygons.push(r) }
+		  vertices={vertices}
+		  faces={faces}
+        />
+        <meshPhongMaterial
+          color={0x0000ff}
+		  wireframe={true}
+        />
+      </mesh>
+      <mesh 
+        castShadow
+      >
+        <geometry
+		  vertices={vertices}
+		  faces={faces}
+        />
+        <meshPhongMaterial
+          color={item["color"]}
+        />
+      </mesh> 
+		</group>
+    );
+  }
+
   renderSphere(item) {
-	  item['opacity'] = 0.7;
-	  return this.renderSphereInternal(item);
+    item['opacity'] = 0.7;
+    return this.renderSphereInternal(item);
   }
 
   renderCursor(cursor) {
-	  var sphere = {
-		color: 0x0000ff,
-		opacity: 1,
-		center: cursor,
-		radius: 0.1,
-	  }
-	  return this.renderSphereInternal(sphere);
+    var sphere = {
+      color: 0x0000ff,
+      opacity: 1,
+      center: cursor,
+      radius: 0.1,
+    }
+    return this.renderSphereInternal(sphere);
   }
 
   renderSphereInternal(item) {
@@ -129,47 +189,28 @@ export class Canvas extends Component {
         />
         <meshPhongMaterial
           color={item["color"]}
-  		  opacity={item["opacity"]}
+          opacity={item["opacity"]}
         />
       </mesh>
     );
   }
 
   renderObject(item) {
-	  item['color'] = 0x00ff00;
-	  item['opacity'] = 1;
-	  return this['render' + item.type](item);
+    item['color'] = 0x00ff00;
+    item['opacity'] = 1;
+    return this['render' + item.type](item);
   }
 
   renderCurrentItem(item) {
-	  if(item) {
-	    item['color'] = 0xff0000;
-		item['opacity'] = 0.5;
-		return this['render' + item.type](item);
-	  }
-  }
-
-  renderPolygon(polygon) {
-    console.log(polygon);
-    return (
-      <mesh 
-        castShadow
-        position={this.spherePosition}
-        rotation={this.state.cubeRotation}
-      >
-        <extrudeGeometry
-          vertices={polygon}
-          // shapes={new THREE.ShapeGeometry(polygon)}
-        />
-        <meshPhongMaterial
-          color={0x00ff00}
-        />
-      </mesh>
-    );
+    if(item) {
+      item['color'] = 0xff0000;
+      item['opacity'] = 0.5;
+      return this['render' + item.type](item);
+    }
   }
 
   renderExtrusion(extrusion) {
-    const {
+    var {
       phase, // either 'base' or 'up'
       basePoints,
       heightVector
@@ -178,43 +219,28 @@ export class Canvas extends Component {
 	if (phase == "base") {
 	  return basePoints.map(point => this.renderCursor(point));
 	} else {
-		var transPoints = basePoints.map(point => new THREE.Vector3(point).add(heightVector));
+		basePoints = basePoints.map(point => convert(point));
+		var transPoints = basePoints.map(point => convert(point).add(heightVector));
+		var vertices = basePoints.concat(transPoints);
 		var olen = basePoints.length;
-
-		var vertices = []
-		for(let i = 0; i < olen; i++) {
-	      vertices = vertices.concat(new THREE.Vector3(basePoints[i]));
-		}
-		for(let i = 0; i < olen; i++) {
-	      vertices = vertices.concat(new THREE.Vector3(transPoints[i]));
-		}
-
-		var indices = []
-
-		debugger;
 
 		function next(i) {
 			return (i + 1) % olen;
 		}
 
-		for(let i = 0; i < olen; i++) {
-			indices.concat([i, next(i), i + olen]);
-			indices.concat([i, next(i)+olen, i + olen]);
+		const getPolygon = (verts) => {
+			return this.renderPolygon({ points: verts.map(vert=>vertices[vert])});
 		}
-		
-		return (
-		  <mesh 
-			castShadow
-		  >
-			<polyhedronGeometry
-			vertices = {vertices}
-			faces = {indices}
-			/>
-			<meshPhongMaterial
-			  color={0x00ff00}
-			/>
-		  </mesh>
-		);
+
+		var ret = []
+		for(let i = 0; i < olen; i++) {
+		ret.push(getPolygon([i, next(i), next(i) + olen, i + olen]));
+		}
+
+		ret.push(this.renderPolygon({ points: basePoints}));
+		ret.push(this.renderPolygon({ points: transPoints}));
+
+		return ret;
 	}
   }
 
@@ -232,8 +258,8 @@ export class Canvas extends Component {
       width,
       height,
       items,
-	  currentItem,
-	  cursor
+      currentItem,
+      cursor
     } = this.props;
 
     const { cameraX, cameraZ } = this.state;
@@ -299,13 +325,13 @@ export class Canvas extends Component {
         { this.renderCurrentItem(currentItem) }
 		{ this.renderExtrusion( {
 			basePoints: [ 
-				{x: 0, y: 0, z: 0},
-				{x: 1, y: 0, z: 0},
-				{x: 1, y: 0, z: 1}, ],
-			heightVector: {x: 0, y: 3, z: 0},
+				{x: 0, y: 1, z: 0},
+				{x: 2, y: 1, z: 0},
+				{x: 1, y: 2, z: 3}, ],
+			heightVector: {x: 0, y: 2, z: 0},
 	    }) }
       </scene>
-      </React3>
+    </React3>
     );
   }
 }

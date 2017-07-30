@@ -13,6 +13,7 @@ class App extends Component {
       view: 'main',
       realWebcam: true,
       mode: null,
+      cameraEnabled: true,
     }
 
     this._onSelectView = this.onSelectView.bind(this);
@@ -62,15 +63,26 @@ class App extends Component {
   }
 
   onMove({ x, y, color }) {
-    const { mode } = this.state;
-    if (mode !== 'camera') return;
-    const art = this.refs.art;
-    art.zoom(y);
-    art.rotateCamera(x);
+    const { cameraEnabled } = this.state;
+
+    if (color === 'yellow') {
+      if (!cameraEnabled) return;
+      const lowPass = 2;
+      if (Math.abs(x) < lowPass && Math.abs(y) < lowPass) return;
+      const art = this.refs.art;
+      art.zoom(y);
+      art.rotateCamera(x);
+      return;
+    }
+    // do other things with purple here
   }
 
   changeMode(mode) {
     this.setState({ mode });
+  }
+
+  switchCamera() {
+    this.setState({ cameraEnabled: !this.state.cameraEnabled });
   }
 
   sendClick() {}
@@ -81,7 +93,6 @@ class App extends Component {
     return (
       <div>
         <h4>Mode</h4>
-        <Button text="Camera [`]" selected={mode === 'camera'} onSelect={() => this.changeMode('camera')}/>
         <Button text="Trace [1]" selected={mode === 'trace'} onSelect={() => this.changeMode('trace')}/>
         <Button text="Polyhedron [2]" selected={mode === 'polyhedron'} onSelect={() => this.changeMode('polyhedron')}/>
         <Button text="Sphere [3]" selected={mode === 'sphere'} onSelect={() => this.changeMode('sphere')}/>
@@ -92,6 +103,8 @@ class App extends Component {
         <Button text="Commit [W]"  onSelect={() => {this.onCommit()}} ref="submitButton" flashy={true}/>
         <Button text="Cancel [E]"  onSelect={() => {this.onCancel()}} ref="cancelButton" flashy={true}/>
         <br />
+        <Button text="Camera [`]" selected={this.state.cameraEnabled} onSelect={() => this.switchCamera()}/>
+          <br />
         <h4>View</h4>
         <ViewSelector
           view={this.state.view}
@@ -105,7 +118,7 @@ class App extends Component {
     return (
       <div>
         <KeyHandler keyEventName={KEYDOWN} keyCode={27} onKeyHandle={() => this.changeMode(null)} />
-        <KeyHandler keyEventName={KEYDOWN} keyValue="`" onKeyHandle={() => this.changeMode('camera')} />
+        <KeyHandler keyEventName={KEYDOWN} keyValue="`" onKeyHandle={() => this.switchCamera()} />
         <KeyHandler keyEventName={KEYDOWN} keyValue="1" onKeyHandle={() => this.changeMode('trace')} />
         <KeyHandler keyEventName={KEYDOWN} keyValue="2" onKeyHandle={() => this.changeMode('polyhedron')} />
         <KeyHandler keyEventName={KEYDOWN} keyValue="3" onKeyHandle={() => this.changeMode('sphere')} />
@@ -137,7 +150,7 @@ class App extends Component {
 
 
   render() {
-    const { debug, items, view, mode } = this.state;
+    const { debug, view, mode } = this.state;
 
     return (
       <div className={classnames({
