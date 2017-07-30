@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import KeyHandler, {KEYDOWN} from 'react-key-handler';
-import { Canvas, ViewSelector, Webcam, Sim, Button } from './components';
+import { Art, ViewSelector, Webcam, Sim, Button } from './components';
 import io from 'socket.io-client';
 import './App.css';
 
@@ -11,25 +11,39 @@ class App extends Component {
     super();
     this.state = {
       debug: false,
-      items: [{
-        type: 'circle',
-        cx: 20,
-        cy: 20,
-        radius: 20,
-      }],
       view: 'main',
-      mode: 'polyhedron',
       realWebcam: true,
     }
 
     this._onSelectView = this.onSelectView.bind(this);
-    this._onSendPoint = this.onSendPoint.bind(this);
-    this.socket = io('http://localhost:3001'); 
+    this._onSendPoint2D = this.onSendPoint2D.bind(this);
+    this.socket = io('http://localhost:3001');
+    this.socket.on('point', point3D => {
+      this.setState({point3D}, () => {
+        this.onHover(point3D);
+      });
+    });
+  }
 
-	this.socket.on('items', (items) => {
-		console.log('items: ' + items);
-		this.setState({items});
-	});
+  onClick() {
+    const art = this.refs.art;
+    if (!art) return;
+    const { point3D } = this.state;
+    art.onClick(point3D);
+  }
+
+  onCancel() {
+    const { point3D } = this.state;
+    art.onClick(point3D);
+  }
+
+  onCommit() {
+    art.onCommit();
+  }
+
+  onHover() {
+    const { point3D } = this.state;
+    art.onHover(point3D);
   }
 
   onSelectView(view) {
@@ -38,8 +52,8 @@ class App extends Component {
     this.socket.emit('setview', view);
   }
 
-  onSendPoint(point) {
-    this.socket.emit('setpoints', point, new Date(), this.state.view);
+  onSendPoint2D(point2D) {
+    this.socket.emit('setpoints', point2D, new Date(), this.state.view);
   }
 
   changeMode(mode) {
@@ -59,15 +73,15 @@ class App extends Component {
         <Button text="Sphere [3]" selected={mode === 'sphere'} onSelect={() => this.changeMode('sphere')}/>
         <br />
         <h4>Controls</h4>
-        <Button text="Click [Q]"  onSelect={() => {this.sendClick()}} ref="clickButton" flashy={true}/>
-        <Button text="Submit [W]"  onSelect={() => {this.sendSubmit()}} ref="submitButton" flashy={true}/>
-        <Button text="Cancel [E]"  onSelect={() => {this.sendCancel()}} ref="cancelButton" flashy={true}/>
+        <Button text="Click [Q]"  onSelect={() => {this.onClick()}} ref="clickButton" flashy={true}/>
+        <Button text="Commit [W]"  onSelect={() => {this.onCommit()}} ref="submitButton" flashy={true}/>
+        <Button text="Cancel [E]"  onSelect={() => {this.onCancel()}} ref="cancelButton" flashy={true}/>
         <br />
         <h4>View</h4>
         <ViewSelector
           view={this.state.view}
           onSelect={this._onSelectView}
-          />
+        />
       </div>
     );
   }
@@ -88,8 +102,8 @@ class App extends Component {
   renderWebcam() {
     const { realWebcam } = this.state;
     const camEl = realWebcam
-          ? <Webcam onSend={this._onSendPoint}/>
-          : <Sim width={400} height={400} onSend={this._onSendPoint} />;
+      ? <Webcam onSend={this._onSendPoint2D}/>
+      : <Sim width={400} height={400} onSend={this._onSendPoint2D} />;
     const change = e => {
       e.preventDefault();
       this.setState({realWebcam: !realWebcam});
@@ -103,11 +117,6 @@ class App extends Component {
     );
   }
 
-  renderCanvas() {
-    return (
-      <Canvas width={500} height={500} items={this.state.items}/>
-    );
-  }
 
   render() {
     const { debug, items, view, mode } = this.state;
@@ -116,7 +125,7 @@ class App extends Component {
       <div className={classnames({
         'dbg': debug
       })}>
-        { this.renderKeybindings() }
+      { this.renderKeybindings() }
       <a
         className={classnames({
           'debug-link': 1,
@@ -142,7 +151,7 @@ class App extends Component {
         </div>
         <div className="col-sm-6 end-column">
           <h3>Your Sketch</h3>
-          { this.renderCanvas() }
+          <Art ref="art"/>
         </div>
       </div>
     </div>
