@@ -156,8 +156,6 @@ export class Canvas extends Component {
   }
 
   renderPolygon(item) {
-    item['color'] = 0x00ff00;
-
 	var vertices = [];
 	var faces = [];
 
@@ -167,8 +165,8 @@ export class Canvas extends Component {
 
 	for (let i = 0; i < item.points.length; i++) {
 		vertices.push(item.points[i]);
-		faces.push(new THREE.Face3(i, shift(i,1), shift(i,2)));
-		faces.push(new THREE.Face3(i, shift(i,2), shift(i,1)));
+		faces.push(new THREE.Face3(0, i, shift(i,1) ));
+		faces.push(new THREE.Face3(0, shift(i,1), i));
 	}
 
     return (
@@ -375,13 +373,13 @@ export class Canvas extends Component {
         { this.renderObjects(items) }
         { this.renderCursor(cursor) }
         { this.renderCurrentItem(currentItem) }
-		{ this.renderExtrusion( {
+		{ /*this.renderExtrusion( {
 			basePoints: [ 
 				{x: 0, y: 1, z: 0},
 				{x: 2, y: 1, z: 0},
 				{x: 1, y: 2, z: 3}, ],
 			heightVector: {x: 0, y: 2, z: 0},
-	    }) }
+	    }) */}
       </scene>
     </React3>
     );

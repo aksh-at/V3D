@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import {project} from '../geometry';
+import {project, convert} from '../geometry';
+import * as THREE from 'three';
 
 
 import { Canvas } from './Canvas';
@@ -96,6 +97,9 @@ export class Art extends Component {
       if (phase === 'base') {
         if (basePoints.length >= 3) {
           point = project(point, basePoints[0], basePoints[1], basePoints[2]);
+			this.setState({
+			  cursor: point
+			});
         }
         newItem = {
           ...currentItem,
@@ -104,7 +108,7 @@ export class Art extends Component {
         newItem = {
           ...currentItem,
           phase: 'up',
-          height: dist(point, basePoints[0]),
+          heightVector: convert(point).distanceTo(currentItem.center)
         }
       }
     } else if (mode === 'trace') {
@@ -126,6 +130,12 @@ export class Art extends Component {
     this.setState({ currentItem: null });
   }
 
+  avg(points) {
+	var ret = new THREE.Vector3(0,0,0);
+	points.forEach( point => ret.add(point) );
+	return ret.multiplyScalar(1.0/points.length);
+  }
+
   onCommit() {
     const { items, currentItem } = this.state;
     const { mode } = this.props;
@@ -144,7 +154,8 @@ export class Art extends Component {
             type: type,
             phase: 'up',
             basePoints: basePoints,
-            height: 0,
+			center: this.avg(basePoints),
+            heightVector: new THREE.Vector3(0,0,0)
           };
         } else {
           newItem = currentItem;
