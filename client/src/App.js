@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // import classnames from 'classnames';
-import { Sketch, ViewSelector, Webcam, Sim, Button } from './components';
+import { Canvas, ViewSelector, Webcam, Sim, Button } from './components';
 import io from 'socket.io-client';
 import './App.css';
 
@@ -74,7 +74,7 @@ class App extends Component {
 
   renderCanvas(items) {
     return (
-      <Sketch items={items}/>
+      <Canvas items={items}/>
     );
   }
 

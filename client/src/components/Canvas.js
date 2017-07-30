@@ -3,6 +3,8 @@ import { drawGrid, drawCircle } from '../canvas-utils';
 import ReactTHREE from 'react-three';
 import { PlaneBufferGeometry, Vector2, Vector3, ShaderMaterial } from 'three';
 
+import './Canvas.css';
+
 var geometry = new PlaneBufferGeometry( 2, 2 );
 
 const { Renderer, Scene, Mesh, Object3d, PerspectiveCamera } = ReactTHREE;
@@ -35,7 +37,7 @@ class Wavey extends React.Component {
 }
 
 
-export class Sketch extends Component {
+export class Canvas extends Component {
   constructor() {
     super();
     this.state = {
@@ -87,7 +89,7 @@ export class Sketch extends Component {
       lookat : new Vector3(0,0,0)};
 
     return (
-      <div className="sketch">
+      <div className="canvas">
         <Renderer width={width} height={height}>
           <Scene width={width} height={height} camera="maincamera">
             <PerspectiveCamera name="maincamera" {...cameraprops} />
