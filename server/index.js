@@ -114,12 +114,18 @@ function processCommand(type) {
 	}
 }
 
+function getUpdates() {
+	return {
+		polygons: polygons,
+		spheres: spheres,
+		markers: modes[currentMode].getMarkers(),
+		lines: modes[currentMode].getLines(),
+		aid_spheres: modes[currentMode].getAidSpheres(),
+	}
+}
+
 function update() {
-  io.sockets.emit('polygons', polygons);
-  io.sockets.emit('spheres', spheres);
-  io.sockets.emit('markers', modes[currentMode].getMarkers());
-  io.sockets.emit('lines', modes[currentMode].getLines());
-  io.sockets.emit('aid_spheres', modes[currentMode].getAidSpheres());
+  io.sockets.emit('items', getUpdates());
 }
 
 io.on('connection', function(client){

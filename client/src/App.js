@@ -22,7 +22,12 @@ class App extends Component {
 
     this._onSelectView = this.onSelectView.bind(this);
     this._onSendPoint = this.onSendPoint.bind(this);
-    this.socket = io('http://localhost:3001');
+    this.socket = io('http://localhost:3001'); 
+
+	this.socket.on('items', function(items){
+		console.log('items: ' + items);
+		this.setState({items});
+	});
   }
 
   onSelectView(view) {
