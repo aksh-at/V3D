@@ -23,11 +23,13 @@ const views = {
 
 function getLastPoint() {
   const { main, side } = views;
-  return {
-    x: main.lastPoint.x,
-    y: main.lastPoint.y,
-    z: side.lastPoint.x,
+  var ret = {
+    x: side.lastPoint.x * (-6) + 3,
+    y: main.lastPoint.y * (- 4.5) + 4.5,
+    z: main.lastPoint.x * (-5) + 2.5,
   }
+  console.log(main, side, ret);
+  return ret;
 }
 
 function update() {
