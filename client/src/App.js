@@ -17,6 +17,7 @@ class App extends Component {
       }],
       view: 'main',
       mode: 'polyhedron',
+      realWebcam: true,
     }
 
     this._onSelectView = this.onSelectView.bind(this);
@@ -56,16 +57,17 @@ class App extends Component {
   }
 
   renderWebcam() {
+    const { realWebcam } = this.state;
+    const camEl = realWebcam ? <Webcam/> : <Sim width={500} height={500} onSend={this._onSendPoint} />;
+    const change = e => {
+      e.preventDefault();
+      this.setState({realWebcam: !realWebcam});
+    };
+
     return (
       <div className="main">
-        <Sim
-          width={300}
-          height={300}
-          onSend={this._onSendPoint}
-        />
-        <div className="webcam">
-          <Webcam/>
-        </div>
+        <a href="#" onClick={change}>Switch to Simulator vs Webcam</a>
+        {camEl}
       </div>
     );
   }
@@ -80,17 +82,17 @@ class App extends Component {
     const { debug, items, view } = this.state;
 
     return (
-      <div className="container">
+      <div>
         <div className="row">
           <div className="col-sm-2 early-column">
             <h3>Options</h3>
             { this.renderOptions(view) }
           </div>
-          <div className="col-sm-4 early-column">
+          <div className="col-sm-5 early-column">
             <h3>Webcam</h3>
             { this.renderWebcam() }
           </div>
-          <div className="col-sm-4 end-column">
+          <div className="col-sm-5 end-column">
             <h3>Your Sketch</h3> 
             { this.renderCanvas(items) }
           </div>

@@ -95,6 +95,7 @@ export class Sim extends Component {
             </div>
           ))}
         </div>
+        <div className="instructions">Click to send events</div>
       </div>
     );
   }
