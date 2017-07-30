@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import { Sketch, ViewSelector } from './components';
+import { Sketch, ViewSelector, Webcam } from './components';
 import io from 'socket.io-client';
 import './App.css';
 
@@ -54,7 +54,7 @@ class App extends Component {
             onSelect={this._onSelectView}
           />
           <div className="webcam">
-            <span>WEBCAM</span>
+            <Webcam/>
           </div>
           <Sketch items={items}/>
           <div className="tools">
