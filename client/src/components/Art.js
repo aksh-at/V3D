@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import {project} from '../geometry';
+
 
 import { Canvas } from './Canvas';
 
@@ -93,6 +95,9 @@ export class Art extends Component {
       // eventually, the basePoints should be 2D points...
       const { basePoints = [], phase = 'base' } = currentItem;
       if (phase === 'base') {
+        if (basePoints.length >= 3) {
+          point = project(point, basePoints[0], basePoints[1], basePoints[2]);
+        }
         newItem = {
           ...currentItem,
           basePointsPreview: basePoints.concat([point]),
