@@ -15,8 +15,6 @@ export class Canvas extends Component {
   constructor(props, context) { 
     super(props, context);
 
-    this.cameraPosition = new THREE.Vector3(0, 0, 1000);
-
     // construct the position vector here, because if we use 'new' within render,
     // React will think that things have changed when they have not.
 
@@ -39,27 +37,42 @@ export class Canvas extends Component {
       });
     };
 
+
+    this._raycaster = new THREE.Raycaster();
+    this.fog = new THREE.Fog(0x001525, 10, 40);
+
     this.lightPosition = new THREE.Vector3(0, 500, 2000);
     this.lightTarget = new THREE.Vector3(0, 0, 0);
+    this.groundQuaternion = new THREE.Quaternion()
+      .setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+    this.cameraPosition = new THREE.Vector3(10, 2, 0);
+    this.spherePosition = new THREE.Vector3(0, 3, 0);
+    this.cameraQuaternion = new THREE.Quaternion()
+      .setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
   }
 
   renderPointLight() {
+	const d = 20;
     return (
-      <spotLight
+		  <directionalLight
             color={0xffffff}
-            intensity={1.5}
-            position={this.lightPosition}
-            lookAt={this.lightTarget}
+            intensity={1.75}
 
             castShadow
-            shadowCameraNear={200}
-            shadowCameraFar={10000}
-            shadowCameraFov={50}
 
-            shadowBias={-0.00022}
+            shadowMapWidth={1024}
+            shadowMapHeight={1024}
 
-            shadowMapWidth={2048}
-            shadowMapHeight={2048}
+            shadowCameraLeft={-d}
+            shadowCameraRight={d}
+            shadowCameraTop={d}
+            shadowCameraBottom={-d}
+
+            shadowCameraFar={3 * d}
+            shadowCameraNear={d}
+
+            position={this.lightPosition}
+            lookAt={this.lightTarget}
           />
     );
   }
@@ -82,13 +95,22 @@ export class Canvas extends Component {
 
   renderSphere() {
     return (
-      <mesh rotation={this.state.cubeRotation}>
+      <mesh 
+
+		castShadow
+		
+		position={this.spherePosition}
+		rotation={this.state.cubeRotation}>
+
         <sphereGeometry
-          radius={70}
+          radius={2}
+		  widthSegments = {10}
+		  heightSegments = {10}
         />
-        <meshBasicMaterial
-          color={0x0000ff}
-        />
+	 <meshPhongMaterial
+
+		color={0x00ff00}
+	  />
       </mesh>
     );
   }
@@ -105,22 +127,49 @@ export class Canvas extends Component {
     // height = window.innerHeight
 
     return (<React3
+      antialias
       mainCamera="camera" // this points to the perspectiveCamera below
       width={width}
       height={height}
 
       onAnimate={this._onAnimate}
+
+	  clearColor={this.fog.color}
+
+	  gammaInput
+	  gammaOutput
+	  shadowMapEnabled
     >
-      <scene>
+      <scene
+		fog = {this.fog}
+		>
         <perspectiveCamera
           name="camera"
-          fov={75}
-          aspect={width / height}
-          near={0.1}
-          far={1000}
 
-          position={this.cameraPosition}
+		 fov={30}
+		aspect={width / height}
+		near={0.5}
+		far={10000}
+
+		  position={this.cameraPosition}
+		  quaternion={this.cameraQuaternion}
         />
+		<mesh
+            castShadow
+            receiveShadow
+
+            quaternion={this.groundQuaternion}
+        >
+		  <planeBufferGeometry
+              width={100}
+              height={100}
+              widthSegments={1}
+              heightSegments={1}
+            />
+            <meshLambertMaterial
+              color={0x777777}
+            />
+          </mesh>
         <ambientLight
             color={0x505050}
           />
