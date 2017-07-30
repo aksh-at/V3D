@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import { Sketch, ViewSelector, Webcam } from './components';
+import { Sketch, ViewSelector, Webcam, Sim } from './components';
 import io from 'socket.io-client';
 import './App.css';
 
@@ -19,12 +19,17 @@ class App extends Component {
     }
 
     this._onSelectView = this.onSelectView.bind(this);
+    this._onSendPoints = this.onSendPoints.bind(this);
     this.socket = io('http://localhost:3001');
   }
 
   onSelectView(view) {
     this.setState({view});
     this.socket.emit('setview', view);
+  }
+
+  onSendPoints(points) {
+    this.socket.emit('setpoints', points);
   }
 
   render() {
@@ -52,6 +57,11 @@ class App extends Component {
           <ViewSelector
             view={view}
             onSelect={this._onSelectView}
+          />
+          <Sim
+            width={300}
+            height={300}
+            onSend={this._onSendPoints}
           />
           <div className="webcam">
             <Webcam/>
