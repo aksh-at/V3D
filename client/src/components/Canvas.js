@@ -70,7 +70,7 @@ export class Canvas extends Component {
   }
 
   rotateCamera(delta) {
-    delta *= 0.05;
+    delta *= 0.01;
 
     this.setState(({cameraX, cameraZ, rot, distance}) => ({
       cameraX: Math.cos(rot + delta) * distance,
