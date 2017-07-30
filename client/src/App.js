@@ -76,7 +76,7 @@ class App extends Component {
 
   renderCanvas(items) {
     return (
-      <Canvas items={items}/>
+      <Canvas width={500} height={500} items={items}/>
     );
   }
 
