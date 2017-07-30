@@ -67,6 +67,8 @@ class App extends Component {
 
     if (color === 'yellow') {
       if (!cameraEnabled) return;
+      const lowPass = 2;
+      if (Math.abs(x) < lowPass && Math.abs(y) < lowPass) return;
       const art = this.refs.art;
       art.zoom(y);
       art.rotateCamera(x);
