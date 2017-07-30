@@ -61,9 +61,9 @@ export class Sim extends Component {
     this.hover({ x, y });
 
     if (color === 'purple') {
-      this.props.onSend({ x: this.lastX, y: this.lastY });
+      this.props.onSend({ x: 1-this.lastX, y: this.lastY });
     } else {
-      this.onMove({ x: this.lastX, y: this.lastY, color });
+      this.onMove({ x: 1-this.lastX, y: this.lastY, color });
     }
   }
 
