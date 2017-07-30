@@ -311,7 +311,6 @@ export class Canvas extends Component {
 
         { this.renderLight() }
         { this.renderObjects(items) }
-        { this.renderObjects(this.state.hardCodedItems) }
         { this.renderCursor(cursor) }
         { this.renderCurrentItem(currentItem) }
       </scene>
