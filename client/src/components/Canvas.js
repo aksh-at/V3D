@@ -96,8 +96,7 @@ export class Canvas extends Component {
 
             <Wavey time={1.0} width={width} height={height} />
           </Scene>
-        </Renderer>;
-        }
+        </Renderer>
       </div>
     );
 }
