@@ -24,7 +24,7 @@ class App extends Component {
     this._onSendPoint = this.onSendPoint.bind(this);
     this.socket = io('http://localhost:3001'); 
 
-	this.socket.on('items', function(items){
+	this.socket.on('items', (items) => {
 		console.log('items: ' + items);
 		this.setState({items});
 	});

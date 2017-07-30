@@ -59,8 +59,8 @@ class DrawPolygon  {
 	getAidSpheres() { return []; }
 
 	getLines() {
-		lines = [];
-		for (i = 0; i < (this.curShape.length-1); i++) {
+		var lines = [];
+		for (var i = 0; i < (this.curShape.length-1); i++) {
 			lines.push([this.curShape[i], this.curShape[i+1]]);
 		}
 		return lines;
@@ -72,10 +72,7 @@ class DrawPolygon  {
 	}
 }
 
-const modes = {
-  draw_polygon: new DrawPolygon(),
-  draw_sphere: new DrawSphere()
-};
+const modes = [ new DrawPolygon(), new DrawSphere() ];
 
 class ViewState {
 	constructor() {
