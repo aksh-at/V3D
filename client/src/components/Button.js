@@ -1,21 +1,34 @@
 import React, { Component } from 'react';
 
 export class Button extends Component {
-  	render() {
-  		var classes = "btn";
-  		if (this.props.selected) {
-  			classes += " btn-info active"
-  		}
+  click() {
+    this.refs.button.click();
+  }
 
-  		return (
-  			<div className="option-button">
-  				<button type="button" 
-            className={classes} 
-            onClick={()=>{this.props.onSelect(this.props.text);}}
+  focus() {
+    this.refs.button.focus();
+  }
+
+  render() {
+    var classes = "btn";
+    if (this.props.selected) {
+      classes += " btn-info active"
+    }
+
+    if (this.props.flashy) {
+      classes += " flashy";
+    }
+
+    return (
+      <div className="option-button">
+        <button type="button"
+                className={classes}
+                ref="button"
+                onClick={()=>{this.props.onSelect(this.props.text);}}
           >
-  					{ this.props.text }
-  				</button>
-  			</div>
-  		);
-  	}
+          { this.props.text }
+        </button>
+      </div>
+    );
+  }
 }

@@ -43,3 +43,13 @@
 .option-button
   button
     width: 130px
+
+.flashy
+  &:focus
+    animation: flashy-bg 0.5s forwards linear
+
+
+@keyframes flashy-bg
+  0% { background: rgb(192, 192, 192) }
+  50% { background: #31b0d5 }
+  100% { background: rgb(192, 192, 192) }
