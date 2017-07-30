@@ -41,6 +41,10 @@ class App extends Component {
     this.setState({ mode });
   }
 
+  sendClick() {}
+  sendSubmit() {}
+  sendCancel() {}
+
   renderOptions(view, mode) {
     return (
       <div>
