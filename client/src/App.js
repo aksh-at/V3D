@@ -46,6 +46,10 @@ class App extends Component {
     this.setState({ mode });
   }
 
+  sendClick() {}
+  sendSubmit() {}
+  sendCancel() {}
+
   renderOptions(view, mode) {
     return (
       <div>
@@ -54,10 +58,10 @@ class App extends Component {
         <Button text="Polyhedron [2]" selected={mode === 'polyhedron'} onSelect={() => this.changeMode('polyhedron')}/>
         <Button text="Sphere [3]" selected={mode === 'sphere'} onSelect={() => this.changeMode('sphere')}/>
         <br />
-        <h4>View</h4>
-        <Button text="Click [Space]"  onSelect={() => {this.sendClick()}}/>
-        <Button text="Submit [Tab]"  onSelect={() => {this.sendSubmit()}}/>
-        <Button text="Cancel [ESC]"  onSelect={() => {this.sendCancel()}}/>
+        <h4>Controls</h4>
+        <Button text="Click [Q]"  onSelect={() => {this.sendClick()}} ref="clickButton" flashy={true}/>
+        <Button text="Submit [W]"  onSelect={() => {this.sendSubmit()}} ref="submitButton" flashy={true}/>
+        <Button text="Cancel [E]"  onSelect={() => {this.sendCancel()}} ref="cancelButton" flashy={true}/>
         <br />
         <h4>View</h4>
         <ViewSelector
@@ -74,9 +78,9 @@ class App extends Component {
         <KeyHandler keyEventName={KEYDOWN} keyValue="1" onKeyHandle={() => this.changeMode('trace')} />
         <KeyHandler keyEventName={KEYDOWN} keyValue="2" onKeyHandle={() => this.changeMode('polyhedron')} />
         <KeyHandler keyEventName={KEYDOWN} keyValue="3" onKeyHandle={() => this.changeMode('sphere')} />
-        <KeyHandler keyEventName={KEYDOWN} keyCode={32} onKeyHandle={() => this.sendClick()} />
-        <KeyHandler keyEventName={KEYDOWN} keyCode={9} onKeyHandle={() => this.sendSubmit()} />
-        <KeyHandler keyEventName={KEYDOWN} keyCode={27} onKeyHandle={() => this.sendCancel()} />
+          <KeyHandler keyEventName={KEYDOWN} keyValue="q" onKeyHandle={() => this.refs.clickButton.focus() || this.refs.clickButton.click()}/>
+            <KeyHandler keyEventName={KEYDOWN} keyValue="w" onKeyHandle={() => this.refs.submitButton.focus() || this.refs.submitButton.click()}/>
+              <KeyHandler keyEventName={KEYDOWN} keyValue="e" onKeyHandle={() => this.refs.cancelButton.focus() || this.refs.cancelButton.click()}/>
       </div>
     );
   }
