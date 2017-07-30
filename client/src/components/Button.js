@@ -1,16 +1,9 @@
 import React, { Component } from 'react';
 
 export class Button extends Component {
-  	constructor(props) {
-	    super();
-	    this.state = {
-	    	selected: props.selected,
-	    };
-  	}
-
   	render() {
   		var classes = "btn";
-  		if (this.state.selected) {
+  		if (this.props.selected) {
   			classes += " btn-info active"
   		}
 
@@ -24,17 +17,5 @@ export class Button extends Component {
   				</button>
   			</div>
   		);
-  	}
-
-  	selectButton() {
-  		this.setState({
-  			selected: true,
-  		})
-  	}
-
-  	deselectButton() {
-  		this.setState({
-  			selected: false,
-  		})
   	}
 }
