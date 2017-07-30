@@ -83,9 +83,9 @@ class App extends Component {
     this.setState({ cameraEnabled: !this.state.cameraEnabled });
   }
 
-  sendClick() {}
-  sendSubmit() {}
-  sendCancel() {}
+  resetCamera() {
+    this.refs.art.reset();
+  }
 
   renderOptions(view, mode) {
     return (
@@ -102,6 +102,7 @@ class App extends Component {
         <Button text="Cancel [E]"  onSelect={() => {this.onCancel()}} ref="cancelButton" flashy={true}/>
         <br />
         <Button text="Camera [`]" selected={this.state.cameraEnabled} onSelect={() => this.switchCamera()}/>
+        <Button text="Reset [R]"  onSelect={() => this.resetCamera()} ref="resetButton" flashy={true}/>
           <br />
         <h4>View</h4>
         <ViewSelector
@@ -124,6 +125,7 @@ class App extends Component {
         <KeyHandler keyEventName={KEYDOWN} keyValue="q" onKeyHandle={() => this.refs.clickButton.focus() || this.refs.clickButton.click()}/>
         <KeyHandler keyEventName={KEYDOWN} keyValue="w" onKeyHandle={() => this.refs.submitButton.focus() || this.refs.submitButton.click()}/>
         <KeyHandler keyEventName={KEYDOWN} keyValue="e" onKeyHandle={() => this.refs.cancelButton.focus() || this.refs.cancelButton.click()}/>
+        <KeyHandler keyEventName={KEYDOWN} keyValue="r" onKeyHandle={() => this.refs.resetButton.focus() || this.refs.resetButton.click()}/>
       </div>
     );
   }

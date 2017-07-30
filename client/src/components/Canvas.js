@@ -16,6 +16,23 @@ console.log(
   {x:2,y:3,z:6},
   )); // {x:1,y:2,z:6}
   */
+
+const initialState = {
+  cubeRotation: new THREE.Euler(),
+  fov: 30,
+  cameraX: 10,
+  cameraZ: 0,
+  rot: 0,
+  distance: 10,
+  hardCodedItems: [
+    {
+      center: new THREE.Vector3(1, 2, 0),
+      radius: .5,
+      type: 'Sphere',
+    }
+  ],
+};
+
 export class Canvas extends Component {
   constructor(props, context) {
     super(props, context);
@@ -23,22 +40,7 @@ export class Canvas extends Component {
     // construct the position vector here, because if we use 'new' within render,
     // React will think that things have changed when they have not.
 
-    this.state = {
-      cubeRotation: new THREE.Euler(),
-      fov: 30,
-      cameraX: 10,
-      cameraZ: 0,
-      rot: 0,
-      distance: 10,
-      hardCodedItems: [
-        {
-          center: new THREE.Vector3(1, 2, 0),
-          radius: .5,
-          type: 'Sphere',
-        }
-      ],
-    };
-
+    this.state = initialState;
     this._onAnimate = () => {
       // we will get this callback every frame
 
@@ -64,6 +66,10 @@ export class Canvas extends Component {
     this.spherePosition = new THREE.Vector3(0, 3, 0);
     this.cameraQuaternion = new THREE.Quaternion()
       .setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
+  }
+
+  reset() {
+    this.setState(initialState);
   }
 
   zoom(delta) {

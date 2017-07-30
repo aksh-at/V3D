@@ -168,6 +168,14 @@ export class Art extends Component {
     }
   }
 
+  reset() {
+    this.refs.canvas.reset();
+    this.setState({
+      currentItem: null,
+      items: [],
+    });
+  }
+
   zoom(delta) {
     this.refs.canvas.zoom(delta);
   }
