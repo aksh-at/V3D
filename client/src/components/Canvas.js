@@ -116,11 +116,6 @@ export class Canvas extends Component {
 	  return this.renderSphereInternal(sphere);
   }
 
-  renderMarker(item) {
-	  item['color'] = 0xff0000;
-	  return this.renderSphereInternal(item);
-  }
-
   renderSphereInternal(item) {
     return (
       <mesh 
@@ -177,11 +172,50 @@ export class Canvas extends Component {
     const {
       phase, // either 'base' or 'up'
       basePoints,
-      basePointsPreview,
-      height
+      heightVector
     } = extrusion;
 
-    return;
+	if (phase == "base") {
+	  return basePoints.map(point => this.renderCursor(point));
+	} else {
+		var transPoints = basePoints.map(point => new THREE.Vector3(point).add(heightVector));
+		var olen = basePoints.length;
+
+		var vertices = []
+		for(let i = 0; i < olen; i++) {
+	      vertices = vertices.concat(new THREE.Vector3(basePoints[i]));
+		}
+		for(let i = 0; i < olen; i++) {
+	      vertices = vertices.concat(new THREE.Vector3(transPoints[i]));
+		}
+
+		var indices = []
+
+		debugger;
+
+		function next(i) {
+			return (i + 1) % olen;
+		}
+
+		for(let i = 0; i < olen; i++) {
+			indices.concat([i, next(i), i + olen]);
+			indices.concat([i, next(i)+olen, i + olen]);
+		}
+		
+		return (
+		  <mesh 
+			castShadow
+		  >
+			<polyhedronGeometry
+			vertices = {vertices}
+			faces = {indices}
+			/>
+			<meshPhongMaterial
+			  color={0x00ff00}
+			/>
+		  </mesh>
+		);
+	}
   }
 
 
@@ -263,6 +297,13 @@ export class Canvas extends Component {
         { this.renderObjects(items) }
         { this.renderCursor(cursor) }
         { this.renderCurrentItem(currentItem) }
+		{ this.renderExtrusion( {
+			basePoints: [ 
+				{x: 0, y: 0, z: 0},
+				{x: 1, y: 0, z: 0},
+				{x: 1, y: 0, z: 1}, ],
+			heightVector: {x: 0, y: 3, z: 0},
+	    }) }
       </scene>
       </React3>
     );

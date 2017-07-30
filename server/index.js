@@ -28,7 +28,6 @@ function getLastPoint() {
     y: main.lastPoint.y * (- 4.5) + 4.5,
     z: main.lastPoint.x * (5) - 2.5,
   }
-  console.log(main, side, ret);
   return ret;
 }
 

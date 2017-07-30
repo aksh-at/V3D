@@ -52,7 +52,6 @@ export class Art extends Component {
           type: 'Extrusion',
           phase: 'base',
           basePoints: basePoints.concat([point]),
-          basePointsPreview: basePoints.concat([point]),
         };
       } else if (phase === 'up') {
         // no op
@@ -88,7 +87,6 @@ export class Art extends Component {
       if (phase === 'base') {
         newItem = {
           ...currentItem,
-          basePointsPreview: basePoints.concat([point]),
         };
       } else if (phase === 'up') {
         newItem = {
