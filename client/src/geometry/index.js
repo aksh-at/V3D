@@ -22,3 +22,9 @@ export function project(point, a, b, c) {
   return point;
 }
 
+
+function random(ar) {
+  const idx = Math.floor(Math.random() * ar.length);
+  return ar[idx];
+}
+

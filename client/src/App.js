@@ -170,15 +170,12 @@ class App extends Component {
       </a>
 
       <div className="row">
-        <div className="col-sm-2 early-column">
+        <div className="col-sm-3 early-column">
           <h3>Options</h3>
           { this.renderOptions(view, mode) }
         </div>
-        <div className="col-sm-4 early-column">
-          <h3>Webcam</h3>
-          { this.renderWebcam() }
-        </div>
-        <div className="col-sm-6 end-column">
+        { this.renderWebcam() }
+        <div className="col-sm-9 end-column">
           <h3>Your Sketch</h3>
           <Art ref="art" mode={mode}/>
         </div>
