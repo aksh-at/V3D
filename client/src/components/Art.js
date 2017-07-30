@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import {project} from '../geometry';
+
 
 import { Canvas } from './Canvas';
 
@@ -24,7 +26,6 @@ export class Art extends Component {
   }
 
   componentWillReceiveProps(props) {
-    console.log(props.mode, this.props.mode);
     if (props.mode !== this.props.mode) {
       // discard everything
       this.onCancel();
@@ -43,7 +44,7 @@ export class Art extends Component {
       newItem = {
         type: 'Sphere',
         center: point,
-        radius: 0
+        radius: 0,
       }
     } else if (mode === 'extrusion') {
       const { basePoints = [], phase = 'base' } = currentItem || {};
@@ -57,7 +58,15 @@ export class Art extends Component {
         // no op
         newItem = currentItem;
       }
+    } else if (mode === 'trace') {
+      const { points = [] } = currentItem || {};
+      newItem = {
+        type: 'Trace',
+        points: points.concat([point]),
+        pointsPreview: points.concat([point]),
+      };
     }
+
     this.setState({
       currentItem: newItem
     });
@@ -85,6 +94,9 @@ export class Art extends Component {
       // eventually, the basePoints should be 2D points...
       const { basePoints = [], phase = 'base' } = currentItem;
       if (phase === 'base') {
+        if (basePoints.length >= 3) {
+          point = project(point, basePoints[0], basePoints[1], basePoints[2]);
+        }
         newItem = {
           ...currentItem,
         };
@@ -95,7 +107,16 @@ export class Art extends Component {
           height: dist(point, basePoints[0]),
         }
       }
+    } else if (mode === 'trace') {
+      const { points = [] } = currentItem;
+      newItem = {
+        ...currentItem,
+        pointsPreview: points.concat([point]),
+      };
+    } else {
+      console.warn('onHover: unknown mode: ' + mode);
     }
+
     this.setState({
       currentItem: newItem
     });
@@ -137,7 +158,20 @@ export class Art extends Component {
           currentItem: null
         });
       }
+    } else if (mode === 'trace') {
+      this.setState({
+        items: items.concat(currentItem),
+        currentItem: null,
+      });
     }
+  }
+
+  reset() {
+    this.refs.canvas.reset();
+    this.setState({
+      currentItem: null,
+      items: [],
+    });
   }
 
   zoom(delta) {

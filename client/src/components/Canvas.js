@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import { drawGrid, drawCircle } from '../canvas-utils';
+import { randomColor, GHOST_COLOR } from '../colorUtils';
+import { project, convert } from '../geometry';
 import React3 from 'react-three-renderer';
 import * as THREE from 'three';
-import { project, convert } from '../geometry';
-
 import './Canvas.css';
 
 /*
@@ -15,6 +16,23 @@ console.log(
   {x:2,y:3,z:6},
   )); // {x:1,y:2,z:6}
   */
+
+const initialState = {
+  cubeRotation: new THREE.Euler(),
+  fov: 30,
+  cameraX: 10,
+  cameraZ: 0,
+  rot: 0,
+  distance: 10,
+  hardCodedItems: [
+    {
+      center: new THREE.Vector3(1, 2, 0),
+      radius: .5,
+      type: 'Sphere',
+    }
+  ],
+};
+
 export class Canvas extends Component {
   constructor(props, context) {
     super(props, context);
@@ -22,22 +40,7 @@ export class Canvas extends Component {
     // construct the position vector here, because if we use 'new' within render,
     // React will think that things have changed when they have not.
 
-    this.state = {
-      cubeRotation: new THREE.Euler(),
-      fov: 30,
-      cameraX: 10,
-      cameraZ: 0,
-      rot: 0,
-      distance: 10,
-      hardCodedItems: {
-        polygons: [[0.4, 0, 0, 0, 0, 0.2, 0, 0.3, 0, 0, 0.2, 0.3]],
-        spheres: [],
-        markers: [],
-        lines: [],
-        aid_spheres: [],
-      }
-    };
-
+    this.state = initialState;
     this._onAnimate = () => {
       // we will get this callback every frame
 
@@ -54,7 +57,7 @@ export class Canvas extends Component {
     };
 
     this._raycaster = new THREE.Raycaster();
-    this.fog = new THREE.Fog(0x001525, 10, 20);
+    this.fog = new THREE.Fog(0x001525, 10, 15);
 
     this.lightPosition = new THREE.Vector3(0, 500, 2000);
     this.lightTarget = new THREE.Vector3(0, 0, 0);
@@ -67,12 +70,16 @@ export class Canvas extends Component {
 	this.polygons = [];
   }
 
+  reset() {
+    this.setState(initialState);
+  }
+
   zoom(delta) {
     this.setState(({distance}) => ({ distance: distance + delta * 0.05}));
   }
 
   rotateCamera(delta) {
-    delta *= 0.05;
+    delta *= 0.03;
 
     this.setState(({cameraX, cameraZ, rot, distance}) => ({
       cameraX: Math.cos(rot + delta) * distance,
@@ -89,29 +96,62 @@ export class Canvas extends Component {
 	}
   }
 
-  renderPointLight() {
-    const d = 200;
+  renderLight() {
+    const d = 20;
     return (
-      <directionalLight
-        color={0xffffff}
-        intensity={1.75}
+      <group>
+        <directionalLight
+          color={0xffffff}
+          intensity={2.0}
 
-        castShadow
+          castShadow
 
-        shadowMapWidth={1024}
-        shadowMapHeight={1024}
+          shadowMapWidth={1024}
+          shadowMapHeight={1024}
 
-        shadowCameraLeft={-d}
-        shadowCameraRight={d}
-        shadowCameraTop={d}
-        shadowCameraBottom={-d}
+          shadowCameraLeft={-d}
+          shadowCameraRight={d}
+          shadowCameraTop={d}
+          shadowCameraBottom={-d}
 
-        shadowCameraFar={3 * d}
-        shadowCameraNear={d}
+          shadowCameraFar={3 * d}
+          shadowCameraNear={d}
 
-        position={this.lightPosition}
-        lookAt={this.lightTarget}
-      />
+          position={new THREE.Vector3(0, 500, 2000)}
+          lookAt={new THREE.Vector3(-100, 100, 0)}
+        />
+        {/*
+        <directionalLight
+          color={0xffffff}
+          intensity={1}
+
+          castShadow
+
+          shadowMapWidth={1024}
+          shadowMapHeight={1024}
+
+          shadowCameraLeft={-d}
+          shadowCameraRight={d}
+          shadowCameraTop={d}
+          shadowCameraBottom={-d}
+
+          shadowCameraFar={3 * d}
+          shadowCameraNear={d}
+
+          position={new THREE.Vector3(1000, 1000, -100)}
+          lookAt={new THREE.Vector3(-100, 100, 0)}
+        /> */}
+        <ambientLight
+          intensity={0.2}
+          position={new THREE.Vector3(10, 10, 10)}
+          lookAt={new THREE.Vector3(0, 0, 0)}
+        />
+        <pointLight
+          intensity={1.0}
+          position={new THREE.Vector3(100, -100, -100)}
+        />
+
+      </group>
     );
   }
 
@@ -162,51 +202,64 @@ export class Canvas extends Component {
   }
 
   renderSphere(item) {
-    item['opacity'] = 0.7;
-    return this.renderSphereInternal(item);
+	  item['opacity'] = 0.1;
+	  return this.renderSphereInternal(item);
   }
 
   renderCursor(cursor) {
-    var sphere = {
-      color: 0x0000ff,
-      opacity: 1,
-      center: cursor,
-      radius: 0.1,
-    }
-    return this.renderSphereInternal(sphere);
+	  var sphere = {
+  		color: 0xdddddd,
+  		opacity: .8,
+  		center: cursor,
+  		radius: 0.1,
+	  }
+	  return this.renderSphereInternal(sphere);
   }
 
   renderSphereInternal(item) {
     return (
-      <mesh 
+      <mesh
         castShadow
-        position={item["center"]}
+        position={item['center']}
       >
         <sphereGeometry
-          radius={item["radius"]}
-          widthSegments = {10}
-          heightSegments = {10}
+          radius={item['radius']}
+          widthSegments = {20}
+          heightSegments = {20}
         />
         <meshPhongMaterial
-          color={item["color"]}
-          opacity={item["opacity"]}
+          color={item['color']}
+  		    opacity={item['opacity']}
+          shininess={20}
         />
       </mesh>
     );
   }
 
+  renderTrace(item) {
+    const vertices = item.points.map(({x,y,z}) => new THREE.Vector3(x,y,z));
+    return (
+        <line>
+          <geometry vertices={vertices}/>
+          <lineBasicMaterial color={item.color} />
+        </line>
+    );
+  }
+
   renderObject(item) {
-    item['color'] = 0x00ff00;
-    item['opacity'] = 1;
-    return this['render' + item.type](item);
+    if (!item['color'] || item['color'] == GHOST_COLOR) {
+      item['color'] = randomColor();
+    }
+	  item['opacity'] = 0.7;
+	  return this['render' + item.type](item);
   }
 
   renderCurrentItem(item) {
-    if(item) {
-      item['color'] = 0xff0000;
-      item['opacity'] = 0.5;
-      return this['render' + item.type](item);
-    }
+	  if(item) {
+	    item['color'] = GHOST_COLOR;
+  		item['opacity'] = 0.5;
+  		return this['render' + item.type](item);
+	  }
   }
 
   renderExtrusion(extrusion) {
@@ -244,7 +297,6 @@ export class Canvas extends Component {
 	}
   }
 
-
   renderObjects(items) {
     return (
       items.map(
@@ -258,8 +310,8 @@ export class Canvas extends Component {
       width,
       height,
       items,
-      currentItem,
-      cursor
+	    currentItem,
+	    cursor
     } = this.props;
 
     const { cameraX, cameraZ } = this.state;
@@ -272,7 +324,7 @@ export class Canvas extends Component {
     return (
       <React3
         antialias
-        mainCamera="camera" // this points to the perspectiveCamera below
+        mainCamera='camera' // this points to the perspectiveCamera below
         width={width}
         height={height}
 
@@ -288,7 +340,7 @@ export class Canvas extends Component {
           fog = {this.fog}
         >
           <perspectiveCamera
-            name="camera"
+            name='camera'
 
             fov={this.state.fov || 30}
             aspect={width / height}
@@ -319,7 +371,7 @@ export class Canvas extends Component {
             color={0x505050}
           />
 
-        { this.renderPointLight() }
+        { this.renderLight() }
         { this.renderObjects(items) }
         { this.renderCursor(cursor) }
         { this.renderCurrentItem(currentItem) }

@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import debounce from 'debounce';
+import throttle from 'lodash.throttle';
 import './sim.css';
 
 function getAbsoluteOffset(el) {
@@ -13,8 +15,8 @@ function getAbsoluteOffset(el) {
 }
 
 export class Sim extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       color: 'purple',
       points: [],
@@ -24,6 +26,13 @@ export class Sim extends Component {
     this.lastX = 0;
     this.lastY = 0;
     this.buffer = [];
+
+    this.lastPoint = null;
+    this.onMove = throttle((point) => {
+      if (this.lastPoint)
+        this.props.onMove({ x: 400*(point.x - this.lastPoint.x), y: 400 * (point.y - this.lastPoint.y), color: point.color });
+      this.lastPoint = Object.assign({}, point);
+    }, 100)
   }
 
   hover({x, y}) {
@@ -39,6 +48,7 @@ export class Sim extends Component {
 
   onMouseMove(e) {
     e.stopPropagation();
+    const { color } = this.state;
     const { width, height } = this.props;
     let x = e.pageX,
       y = e.pageY;
@@ -49,7 +59,12 @@ export class Sim extends Component {
     x /= width;
     y /= height;
     this.hover({ x, y });
-    this.props.onSend({ x: this.lastX, y: this.lastY });
+
+    if (color === 'purple') {
+      this.props.onSend({ x: this.lastX, y: this.lastY });
+    } else {
+      this.onMove({ x: this.lastX, y: this.lastY, color });
+    }
   }
 
   render() {
@@ -87,6 +102,7 @@ export class Sim extends Component {
             </div>
           ))}
         </div>
+        <a href="#" onClick={() => this.setState({color: this.state.color === 'purple' ? 'yellow' : 'purple'})}>Switch color</a>
       </div>
     );
   }

@@ -21,7 +21,6 @@ class App extends Component {
     this._onMove = this.onMove.bind(this);
     this.socket = io('http://localhost:3001');
     this.socket.on('point', point3D => {
-      console.log('point3D:', point3D);
       this.setState({point3D}, () => {
         this.onHover(point3D);
       });
@@ -53,7 +52,6 @@ class App extends Component {
   }
 
   onSelectView(view) {
-    console.log('onSelectView', view);
     this.setState({view});
     this.socket.emit('setview', view);
   }
@@ -85,9 +83,9 @@ class App extends Component {
     this.setState({ cameraEnabled: !this.state.cameraEnabled });
   }
 
-  sendClick() {}
-  sendSubmit() {}
-  sendCancel() {}
+  resetCamera() {
+    this.refs.art.reset();
+  }
 
   renderOptions(view, mode) {
     return (
@@ -104,6 +102,7 @@ class App extends Component {
         <Button text="Cancel [E]"  onSelect={() => {this.onCancel()}} ref="cancelButton" flashy={true}/>
         <br />
         <Button text="Camera [`]" selected={this.state.cameraEnabled} onSelect={() => this.switchCamera()}/>
+        <Button text="Reset [R]"  onSelect={() => this.resetCamera()} ref="resetButton" flashy={true}/>
           <br />
         <h4>View</h4>
         <ViewSelector
@@ -126,6 +125,7 @@ class App extends Component {
         <KeyHandler keyEventName={KEYDOWN} keyValue="q" onKeyHandle={() => this.refs.clickButton.focus() || this.refs.clickButton.click()}/>
         <KeyHandler keyEventName={KEYDOWN} keyValue="w" onKeyHandle={() => this.refs.submitButton.focus() || this.refs.submitButton.click()}/>
         <KeyHandler keyEventName={KEYDOWN} keyValue="e" onKeyHandle={() => this.refs.cancelButton.focus() || this.refs.cancelButton.click()}/>
+        <KeyHandler keyEventName={KEYDOWN} keyValue="r" onKeyHandle={() => this.refs.resetButton.focus() || this.refs.resetButton.click()}/>
       </div>
     );
   }
@@ -134,7 +134,7 @@ class App extends Component {
     const { realWebcam } = this.state;
     const camEl = realWebcam
       ? <Webcam onSend={this._onSendPoint2D} onMove={this._onMove}/>
-      : <Sim width={400} height={400} onSend={this._onSendPoint2D} />;
+      : <Sim width={400} height={400} onSend={this._onSendPoint2D} onMove={this._onMove} />;
     const change = e => {
       e.preventDefault();
       this.setState({realWebcam: !realWebcam});
@@ -172,15 +172,12 @@ class App extends Component {
       </a>
 
       <div className="row">
-        <div className="col-sm-2 early-column">
+        <div className="col-sm-3 early-column">
           <h3>Options</h3>
           { this.renderOptions(view, mode) }
         </div>
-        <div className="col-sm-4 early-column">
-          <h3>Webcam</h3>
-          { this.renderWebcam() }
-        </div>
-        <div className="col-sm-6 end-column">
+        { this.renderWebcam() }
+        <div className="col-sm-9 end-column">
           <h3>Your Sketch</h3>
           <Art ref="art" mode={mode}/>
         </div>
