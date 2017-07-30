@@ -28,6 +28,12 @@ function getLastPoint() {
     y: main.lastPoint.y * (- 4.5) + 4.5,
     z: main.lastPoint.x * (5) - 2.5,
   }
+  const scale = .75;
+  ret = {
+    x: ret.x * scale,
+    y: ret.y * scale,
+    z: ret.z * scale,
+  }
   console.log(main, side, ret);
   return ret;
 }
