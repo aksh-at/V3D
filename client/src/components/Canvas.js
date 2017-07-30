@@ -123,6 +123,8 @@ export class Canvas extends Component {
   renderMarker(item) {
     item['color'] = 0xff0000;
     return this.renderSphereInternal(item);
+	  item['color'] = 0xff0000;
+	  return this.renderSphereInternal(item);
   }
 
   renderSphereInternal(item) {
@@ -144,6 +146,16 @@ export class Canvas extends Component {
     );
   }
 
+  renderTrace(item) {
+    const vertices = item.points.map(({x,y,z}) => new THREE.Vector3(x,y,z));
+    return (
+        <line>
+          <geometry vertices={vertices}/>
+          <lineBasicMaterial color={item.color} />
+        </line>
+    );
+  }
+
   renderObject(item) {
     item['color'] = 0x00ff00;
     item['opacity'] = 1;
@@ -151,7 +163,7 @@ export class Canvas extends Component {
   }
 
   renderCurrentItem(item) {
-    if(item) {
+    if (item) {
       item['color'] = 0xff0000;
       item['opacity'] = 0.5;
       return this['render' + item.type](item);
@@ -161,7 +173,7 @@ export class Canvas extends Component {
   renderPolygon(polygon) {
     console.log(polygon);
     return (
-      <mesh 
+      <mesh
         castShadow
         position={this.spherePosition}
         rotation={this.state.cubeRotation}

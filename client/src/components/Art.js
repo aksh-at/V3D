@@ -58,7 +58,15 @@ export class Art extends Component {
         // no op
         newItem = currentItem;
       }
+    } else if (mode === 'trace') {
+      const { points = [] } = currentItem || {};
+      newItem = {
+        type: 'Trace',
+        points: points.concat([point]),
+        pointsPreview: points.concat([point]),
+      };
     }
+
     this.setState({
       currentItem: newItem
     });
@@ -97,7 +105,16 @@ export class Art extends Component {
           height: dist(point, basePoints[0]),
         }
       }
+    } else if (mode === 'trace') {
+      const { points = [] } = currentItem;
+      newItem = {
+        ...currentItem,
+        pointsPreview: points.concat([point]),
+      };
+    } else {
+      console.log('onHover: unknown mode: ' + mode);
     }
+
     this.setState({
       currentItem: newItem
     });
@@ -139,6 +156,11 @@ export class Art extends Component {
           currentItem: null
         });
       }
+    } else if (mode === 'trace') {
+      this.setState({
+        items: items.concat(currentItem),
+        currentItem: null,
+      });
     }
   }
 
