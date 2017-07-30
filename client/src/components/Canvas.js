@@ -264,12 +264,14 @@ export class Canvas extends Component {
     var {
       phase, // either 'base' or 'up'
       basePoints,
+      center,
       heightVector
     } = extrusion;
 
 	if (phase == "base") {
 	  return basePoints.map(point => this.renderCursor(point));
 	} else {
+		console.log(heightVector, basePoints);
 		basePoints = basePoints.map(point => convert(point));
 		var transPoints = basePoints.map(point => convert(point).add(heightVector));
 		var vertices = basePoints.concat(transPoints);
@@ -373,13 +375,6 @@ export class Canvas extends Component {
         { this.renderObjects(items) }
         { this.renderCursor(cursor) }
         { this.renderCurrentItem(currentItem) }
-		{ /*this.renderExtrusion( {
-			basePoints: [ 
-				{x: 0, y: 1, z: 0},
-				{x: 2, y: 1, z: 0},
-				{x: 1, y: 2, z: 3}, ],
-			heightVector: {x: 0, y: 2, z: 0},
-	    }) */}
       </scene>
     </React3>
     );

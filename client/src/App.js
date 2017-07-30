@@ -19,7 +19,7 @@ class App extends Component {
     this._onSelectView = this.onSelectView.bind(this);
     this._onSendPoint2D = this.onSendPoint2D.bind(this);
     this._onMove = this.onMove.bind(this);
-    this.socket = io('http://localhost:3001');
+    this.socket = io('http://45.55.13.59:3001');
     this.socket.on('point', point3D => {
       this.setState({point3D}, () => {
         this.onHover(point3D);

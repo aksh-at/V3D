@@ -108,8 +108,9 @@ export class Art extends Component {
         newItem = {
           ...currentItem,
           phase: 'up',
-          heightVector: convert(point).distanceTo(currentItem.center)
+          heightVector: convert(point).sub(currentItem.center)
         }
+		console.log("made height with", newItem.heightVector, point, currentItem.center);
       }
     } else if (mode === 'trace') {
       const { points = [] } = currentItem;
