@@ -60,7 +60,7 @@ class ViewState {
 		this.lastPoint = { x: 0, y: 0};
 	}
 
-	registerPoint(points, timestamp) {
+	registerPoints(points, timestamp) {
 		this.lastPoint = points;
 		this.lastTime  = timestamp;
 	}
@@ -110,7 +110,6 @@ io.on('connection', function(client){
 
   client.on('disconnect', function(){
     console.log('disconnect');
-    if (view) view.online = false;
     update();
   });
 });
