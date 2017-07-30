@@ -179,7 +179,7 @@ class App extends Component {
       </a>
 
       <div className="row">
-        <div className="col-sm-3 early-column">
+        <div className="col-sm-2 early-column">
           <h3>Options</h3>
           { this.renderOptions(view, mode) }
         </div>

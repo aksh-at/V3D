@@ -4,7 +4,6 @@ import { randomColor, GHOST_COLOR } from '../colorUtils';
 import { project, convert } from '../geometry';
 import React3 from 'react-three-renderer';
 import * as THREE from 'three';
-import './Canvas.css';
 
 /*
  * testing project:
