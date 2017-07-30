@@ -101,22 +101,23 @@ export class Canvas extends Component {
     );
   }
 
-  renderSphere(item) {
-	  item['color'] = 0x00ff00;
-	  item['opacity'] = 0.7;
-	  return this.renderSphereInternal(item);
+  renderSphere(item, { ghost = false } = {}) {
+    item['color'] = ghost
+      ? "0x880000"
+      : "0xff0000";
+    return this.renderSphereInternal(item);
   }
 
   renderCursor(item) {
-	  item['color'] = 0x0000ff;
-	  item['opacity'] = 1;
-	  return this.renderSphereInternal(item);
+    item['color'] = 0x0000ff;
+    item['opacity'] = 1;
+    return this.renderSphereInternal(item);
   }
 
   renderMarker(item) {
-	  item['color'] = 0xff0000;
-	  item['opacity'] = 1;
-	  return this.renderSphereInternal(item);
+    item['color'] = 0xff0000;
+    item['opacity'] = 1;
+    return this.renderSphereInternal(item);
   }
 
   renderSphereInternal(item) {
@@ -132,7 +133,7 @@ export class Canvas extends Component {
         />
         <meshPhongMaterial
           color={item["color"]}
-  		  opacity={item["opacity"]}
+          opacity={item["opacity"]}
         />
       </mesh>
     );
@@ -169,20 +170,33 @@ export class Canvas extends Component {
     return;
   }
 
+  renderObject(item) {
+    if (item) {
+      return this['render' + item.type](item); // XXX what a hack
+    }
+  }
 
   renderObjects(items) {
     return (
       items.map(
-        item => (this['render' + item.type](item))
+        item => (this.renderObject(item))
       )
     );
   }
+
+  renderCurrentObject(item) {
+    this.renderObject(item, {
+      ghost: true
+    });
+  }
+
 
   render() {
     const {
       width,
       height,
       items,
+      currentItem,
     } = this.props;
 
     const { cameraX, cameraZ } = this.state;
@@ -244,8 +258,9 @@ export class Canvas extends Component {
 
         { this.renderPointLight() }
         { this.renderObjects(items) }
+        { this.renderCurrentObject(currentItem) }
       </scene>
-      </React3>
+    </React3>
     );
   }
 }
