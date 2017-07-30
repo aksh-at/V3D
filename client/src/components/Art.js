@@ -29,7 +29,7 @@ export class Art extends Component {
     let newItem;
     if (mode === 'sphere') {
       newItem = {
-        type: 'sphere',
+        type: 'Sphere',
         center: point,
         radius: 0
       }

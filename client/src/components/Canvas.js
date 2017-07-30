@@ -15,29 +15,8 @@ export class Canvas extends Component {
   constructor(props, context) { 
     super(props, context);
 
-    this.cameraPosition = new THREE.Vector3(0, 0, 1);
-
     // construct the position vector here, because if we use 'new' within render,
     // React will think that things have changed when they have not.
-
-    this.state = {
-      cubeRotation: new THREE.Euler(),
-    };
-
-    this._onAnimate = () => {
-      // we will get this callback every frame
-
-      // pretend cubeRotation is immutable.
-      // this helps with updates and pure rendering.
-      // React will be sure that the rotation has now updated.
-      this.setState({
-        cubeRotation: new THREE.Euler(
-          this.state.cubeRotation.x + 0.1,
-          this.state.cubeRotation.y + 0.1,
-          0
-        ),
-      });
-    };
 
     this._raycaster = new THREE.Raycaster();
     this.fog = new THREE.Fog(0x001525, 10, 20);
@@ -51,13 +30,6 @@ export class Canvas extends Component {
     this.cameraQuaternion = new THREE.Quaternion()
       .setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
 
-    this.state.items = {
-      polygons: [],
-      spheres: [],
-      markers: [],
-      lines: [],
-      aid_spheres: [],
-    };
   }
 
   renderPointLight() {
@@ -86,36 +58,29 @@ export class Canvas extends Component {
     );
   }
 
-  renderRotatingCube(offset) {
-    return (
-      <mesh rotation={this.state.cubeRotation}>
-        <boxGeometry
-          vertices={[THREE.Vector3]}
-          width={1 - offset}
-          height={1 + offset}
-          depth={1 + 2 * offset}
-        />
-        <meshBasicMaterial
-          color={0x00ff00}
-        />
-      </mesh>
-    );
+  renderSphere(item) {
+	  item['color'] = "0x00ff00";
+	  return this.renderSphereInternal(item);
   }
 
-  renderSphere() {
+  renderMarker(item) {
+	  item['color'] = "0xff0000";
+	  return this.renderSphereInternal(item);
+  }
+
+  renderSphereInternal(item) {
     return (
       <mesh 
     		castShadow
-    		position={this.spherePosition}
-    		// rotation={this.state.cubeRotation}
+    		position={item["centre"]}
       >
         <sphereGeometry
-          radius={.5}
+          radius={item["radius"]}
     		  widthSegments = {10}
     		  heightSegments = {10}
         />
         <meshPhongMaterial
-  		    color={0x00ff00}
+  		    color={item["color"]}
   	    />
       </mesh>
     );
@@ -126,23 +91,12 @@ export class Canvas extends Component {
   }
 
   renderObjects(items) {
-    return (<group>
-      {items.polygons.map(
-        polygon => (this.renderPolygon(polygon))
-      )}
-      {items.spheres.map(
-        sphere => (this.renderSphere(sphere))
-      )}
-      {items.markers.map(
-        marker => (this.renderMarker(marker))
-      )}
-      {items.lines.map(
-        line => (this.renderLine(line))
-      )}
-      {items.aid_spheres.map(
-        sphere => (this.renderSphere(sphere))
-      )}
-    </group>);
+	console.log(items);
+    return (
+	  items.map(
+        item => (this['render' + item.type](item))
+      )
+	);
   }
 
   render() {
@@ -205,9 +159,8 @@ export class Canvas extends Component {
             color={0x505050}
           />
 
-          { this.renderObjects(this.state.items) }
+          { this.renderObjects(items) }
           { this.renderPointLight() }
-          { this.renderSphere() }
 
         </scene>
       </React3>
