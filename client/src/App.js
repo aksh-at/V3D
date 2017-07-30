@@ -41,10 +41,6 @@ class App extends Component {
     this.setState({ mode });
   }
 
-  sendClick() {}
-  sendSubmit() {}
-  sendCancel() {}
-
   renderOptions(view, mode) {
     return (
       <div>
@@ -60,7 +56,7 @@ class App extends Component {
         <br />
         <h4>View</h4>
         <ViewSelector
-          view={view}
+          view={this.state.view}
           onSelect={this._onSelectView}
           />
       </div>
@@ -98,9 +94,9 @@ class App extends Component {
     );
   }
 
-  renderCanvas(items) {
+  renderCanvas() {
     return (
-      <Canvas width={500} height={500} items={items}/>
+      <Canvas width={500} height={500} items={this.state.items}/>
     );
   }
 
@@ -131,13 +127,13 @@ class App extends Component {
           <h3>Options</h3>
           { this.renderOptions(view, mode) }
         </div>
-        <div className="col-sm-5 early-column">
+        <div className="col-sm-4 early-column">
           <h3>Webcam</h3>
           { this.renderWebcam() }
         </div>
-        <div className="col-sm-5 end-column">
+        <div className="col-sm-6 end-column">
           <h3>Your Sketch</h3>
-          { this.renderCanvas(items) }
+          { this.renderCanvas() }
         </div>
       </div>
     </div>

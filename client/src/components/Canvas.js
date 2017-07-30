@@ -9,12 +9,13 @@ export class Canvas extends Component {
   static propTypes = {
     width: React.PropTypes.number.isRequired,
     height: React.PropTypes.number.isRequired,
+    items: React.PropTypes.object.isRequired,
   };
 
-  constructor(props, context) {
+  constructor(props, context) { 
     super(props, context);
 
-    this.cameraPosition = new THREE.Vector3(0, 0, 5);
+    this.cameraPosition = new THREE.Vector3(0, 0, 1000);
 
     // construct the position vector here, because if we use 'new' within render,
     // React will think that things have changed when they have not.
@@ -37,12 +38,66 @@ export class Canvas extends Component {
         ),
       });
     };
+
+    this.lightPosition = new THREE.Vector3(0, 500, 2000);
+    this.lightTarget = new THREE.Vector3(0, 0, 0);
+  }
+
+  renderPointLight() {
+    return (
+      <spotLight
+            color={0xffffff}
+            intensity={1.5}
+            position={this.lightPosition}
+            lookAt={this.lightTarget}
+
+            castShadow
+            shadowCameraNear={200}
+            shadowCameraFar={10000}
+            shadowCameraFov={50}
+
+            shadowBias={-0.00022}
+
+            shadowMapWidth={2048}
+            shadowMapHeight={2048}
+          />
+    );
+  }
+
+  renderRotatingCube(offset) {
+    return (
+      <mesh rotation={this.state.cubeRotation}>
+        <boxGeometry
+          vertices={[THREE.Vector3]}
+          width={1 - offset}
+          height={1 + offset}
+          depth={1 + 2 * offset}
+        />
+        <meshBasicMaterial
+          color={0x00ff00}
+        />
+      </mesh>
+    );
+  }
+
+  renderSphere() {
+    return (
+      <mesh rotation={this.state.cubeRotation}>
+        <sphereGeometry
+          radius={70}
+        />
+        <meshBasicMaterial
+          color={0x0000ff}
+        />
+      </mesh>
+    );
   }
 
   render() {
     const {
       width,
       height,
+      items,
     } = this.props;
 
     // or you can use:
@@ -66,18 +121,11 @@ export class Canvas extends Component {
 
           position={this.cameraPosition}
         />
-        <mesh
-          rotation={this.state.cubeRotation}
-        >
-          <boxGeometry
-            width={1}
-            height={1}
-            depth={1}
+        <ambientLight
+            color={0x505050}
           />
-          <meshBasicMaterial
-            color={0x00ff00}
-          />
-        </mesh>
+        { this.renderPointLight() }
+        { this.renderSphere() }
       </scene>
     </React3>);
   }
