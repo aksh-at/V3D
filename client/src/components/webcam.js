@@ -120,8 +120,8 @@ export class Webcam extends Component {
   render() {
     return (
       <div className="demo-container">
-        <video id="webcam-video" height="150" width="200" preload autoPlay loop muted></video>
-        <canvas ref="canvas" height="150" width="200"></canvas>
+        <video id="webcam-video" height="210" width="280" preload autoPlay loop muted></video>
+        <canvas ref="canvas" height="210" width="280"></canvas>
       </div>
     );
   }
