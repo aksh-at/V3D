@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { drawGrid, drawCircle } from '../canvas-utils';
 import React3 from 'react-three-renderer';
 import * as THREE from 'three';
 import { project } from '../geometry';
@@ -17,12 +16,6 @@ console.log(
   )); // {x:1,y:2,z:6}
   */
 export class Canvas extends Component {
-  static propTypes = {
-    width: React.PropTypes.number.isRequired,
-    height: React.PropTypes.number.isRequired,
-    items: React.PropTypes.object.isRequired,
-  };
-
   constructor(props, context) {
     super(props, context);
 

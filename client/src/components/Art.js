@@ -76,7 +76,7 @@ export class Art extends Component {
 
     let newItem;
     if (mode === 'sphere') {
-      const { type, center } = currentItem;
+      const { center } = currentItem;
       newItem = {
         ...currentItem,
         radius: dist(point, center),

@@ -150,7 +150,7 @@ class App extends Component {
 
 
   render() {
-    const { debug, items, view, mode } = this.state;
+    const { debug, view, mode } = this.state;
 
     return (
       <div className={classnames({

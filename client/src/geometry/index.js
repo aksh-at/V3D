@@ -1,30 +1,5 @@
 import { Vector3 } from 'three';
 
-function sub(a, b) {
-  return {
-    x: a.x - b.x,
-    y: a.y - b.y,
-    z: a.z - b.z
-  }
-}
-
-function add(a, b) {
-  return {
-    x: a.x + b.x,
-    y: a.y + b.y,
-    z: a.z + b.z
-  }
-}
-
-
-function cross(a, b) {
-  return {
-    x: a.x + b.x,
-    y: a.y + b.y,
-    z: a.z + b.z
-  }
-}
-
 // project({x:1,y:2,z:3},...) works
 // project(new THREE.Vector3(1, 2, 3), ...) works too
 export function project(point, a, b, c) {
