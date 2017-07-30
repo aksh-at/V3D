@@ -4,11 +4,11 @@ body {
 	font-family: sans-serif;
 }
 
-.column {
+.early-column {
 	border-right: 3px solid #269abc;
 }
 
-.column,
+.early-column,
 .end-column {
 	height: 650px;
 	padding-left: 25px;
@@ -23,7 +23,6 @@ body {
 h3 {
 	color: #269abc;
 	margin-bottom: 20px;
-	text-shadow: -0.5px -0.5px #666666;
 }
 
 .btn {

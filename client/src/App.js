@@ -82,11 +82,11 @@ class App extends Component {
     return (
       <div className="container">
         <div className="row">
-          <div className="col-sm-2 column">
+          <div className="col-sm-2 early-column">
             <h3>Options</h3>
             { this.renderOptions() }
           </div>
-          <div className="col-sm-4 column">
+          <div className="col-sm-4 early-column">
             <h3>Webcam</h3>
             { this.renderWebcam(view) }
           </div>
