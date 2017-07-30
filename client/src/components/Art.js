@@ -43,7 +43,7 @@ export class Art extends Component {
       newItem = {
         type: 'Sphere',
         center: point,
-        radius: 0
+        radius: 0,
       }
     } else if (mode === 'extrusion') {
       const { basePoints = [], phase = 'base' } = currentItem || {};

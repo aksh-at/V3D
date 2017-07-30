@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import { drawGrid, drawCircle } from '../canvas-utils';
+import { randomColor, GHOST_COLOR } from '../colorUtils';
+import { project, convert } from '../geometry';
 import React3 from 'react-three-renderer';
 import * as THREE from 'three';
-import { project, convert } from '../geometry';
-
 import './Canvas.css';
 
 /*
@@ -31,8 +32,8 @@ export class Canvas extends Component {
       distance: 10,
       hardCodedItems: [
         {
-          center: new THREE.Vector3(0, 0, 0),
-          radius: 30,
+          center: new THREE.Vector3(1, 2, 0),
+          radius: .5,
           type: 'Sphere',
         }
       ],
@@ -85,7 +86,7 @@ export class Canvas extends Component {
       <group>
         <directionalLight
           color={0xffffff}
-          intensity={1.3}
+          intensity={2.0}
 
           castShadow
 
@@ -103,9 +104,10 @@ export class Canvas extends Component {
           position={new THREE.Vector3(0, 500, 2000)}
           lookAt={new THREE.Vector3(-100, 100, 0)}
         />
+        {/*
         <directionalLight
           color={0xffffff}
-          intensity={1.3}
+          intensity={1}
 
           castShadow
 
@@ -122,55 +124,57 @@ export class Canvas extends Component {
 
           position={new THREE.Vector3(1000, 1000, -100)}
           lookAt={new THREE.Vector3(-100, 100, 0)}
-        />
+        /> */}
         <ambientLight
-          intensity={0.25}
+          intensity={0.2}
           position={new THREE.Vector3(10, 10, 10)}
           lookAt={new THREE.Vector3(0, 0, 0)}
         />
-
+        <pointLight
+          intensity={1.0}
+          position={new THREE.Vector3(100, -100, -100)}
+        />
 
       </group>
     );
   }
 
   renderSphere(item) {
-	  item['opacity'] = 0.5;
+	  item['opacity'] = 0.1;
 	  return this.renderSphereInternal(item);
   }
 
   renderCursor(cursor) {
 	  var sphere = {
-		color: 0x0000ff,
-		opacity: 1,
-		center: cursor,
-		radius: 0.1,
+  		color: 0xdddddd,
+  		opacity: .8,
+  		center: cursor,
+  		radius: 0.1,
 	  }
 	  return this.renderSphereInternal(sphere);
   }
 
   renderMarker(item) {
-    item['color'] = 0xff0000;
-    return this.renderSphereInternal(item);
-	  item['color'] = 0xff0000;
+    item['opacity'] = 0.7;
 	  return this.renderSphereInternal(item);
   }
 
   renderSphereInternal(item) {
-    console.log(item["center"], item.radius)
+    console.log(item['center'], item.radius)
     return (
       <mesh 
         castShadow
-        position={item["center"]}
+        position={item['center']}
       >
         <sphereGeometry
-          radius={item["radius"]}
-          widthSegments = {10}
-          heightSegments = {10}
+          radius={item['radius']}
+          widthSegments = {20}
+          heightSegments = {20}
         />
-        <meshNormalMaterial
-          color={item["color"]}
-  		    opacity={item["opacity"]}
+        <meshPhongMaterial
+          color={item['color']}
+  		    opacity={item['opacity']}
+          shininess={20}
         />
       </mesh>
     );
@@ -187,17 +191,19 @@ export class Canvas extends Component {
   }
 
   renderObject(item) {
-    item['color'] = 0x00ff00;
-    item['opacity'] = 1;
-    return this['render' + item.type](item);
+    if (!item['color'] || item['color'] == GHOST_COLOR) {
+      item['color'] = randomColor();
+    }
+	  item['opacity'] = 0.7;
+	  return this['render' + item.type](item);
   }
 
   renderCurrentItem(item) {
-    if (item) {
-      item['color'] = 0xff0000;
-      item['opacity'] = 0.5;
-      return this['render' + item.type](item);
-    }
+	  if(item) {
+	    item['color'] = GHOST_COLOR;
+  		item['opacity'] = 0.5;
+  		return this['render' + item.type](item);
+	  }
   }
 
   renderPolygon(polygon) {
@@ -258,7 +264,7 @@ export class Canvas extends Component {
     return (
       <React3
         antialias
-        mainCamera="camera" // this points to the perspectiveCamera below
+        mainCamera='camera' // this points to the perspectiveCamera below
         width={width}
         height={height}
 
@@ -274,7 +280,7 @@ export class Canvas extends Component {
           fog = {this.fog}
         >
           <perspectiveCamera
-            name="camera"
+            name='camera'
 
             fov={this.state.fov || 30}
             aspect={width / height}
@@ -306,6 +312,7 @@ export class Canvas extends Component {
           />
 
         { this.renderLight() }
+        { this.renderObjects(items) }
         { this.renderObjects(this.state.hardCodedItems) }
         { this.renderCursor(cursor) }
         { this.renderCurrentItem(currentItem) }

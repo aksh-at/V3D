@@ -1,0 +1,1 @@
+var niceColors = [0x0099ff, 0x9900ff]
