@@ -198,7 +198,7 @@ export class Art extends Component {
     const { items, currentItem, cursor } = this.state;
     return (
       <div className="art">
-        <Canvas width={500} height={500} items={items} currentItem={currentItem} cursor={cursor} ref="canvas"/>
+          <Canvas width={800} height={600} items={items} currentItem={currentItem} cursor={cursor} ref="canvas"/>
         <div className="items">
           <h4>Items</h4>
           {items.map(item => (

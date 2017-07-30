@@ -23,18 +23,17 @@ const views = {
 
 function getLastPoint() {
   const { main, side } = views;
+  const scale = num => (
+    .9 * (num - .5) + .5
+  );
   var ret = {
-    x: side.lastPoint.x * (-6) + 3,
-    y: main.lastPoint.y * (- 4.5) + 4.5,
-    z: main.lastPoint.x * (5) - 2.5,
+    x: scale(side.lastPoint.x) * (-6) + 3,
+    y: scale(main.lastPoint.y) * (-3.7) + 3.7,
+    z: scale(main.lastPoint.x) * (5) - 2.5,
   }
 
-  const scale = .75;
-  ret = {
-    x: ret.x * scale,
-    y: ret.y * scale,
-    z: ret.z * scale,
-  }
+  console.log('last', main.lastPoint);
+  console.log('ret', ret);
   return ret;
 }
 
