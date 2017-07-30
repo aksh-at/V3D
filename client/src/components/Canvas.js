@@ -160,7 +160,6 @@ export class Canvas extends Component {
   }
 
   renderSphereInternal(item) {
-    console.log(item['center'], item.radius)
     return (
       <mesh
         castShadow
