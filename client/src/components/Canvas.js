@@ -30,12 +30,14 @@ export class Canvas extends Component {
     this.cameraQuaternion = new THREE.Quaternion()
       .setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
 
-    this.state.hardCodedItems = {
-      polygons: [[0.4, 0, 0, 0, 0, 0.2, 0, 0.3, 0, 0, 0.2, 0.3]],
-      spheres: [],
-      markers: [],
-      lines: [],
-      aid_spheres: [],
+    this.state = {
+      hardCodedItems: {
+        polygons: [[0.4, 0, 0, 0, 0, 0.2, 0, 0.3, 0, 0, 0.2, 0.3]],
+        spheres: [],
+        markers: [],
+        lines: [],
+        aid_spheres: [],
+      }
     };
   }
 
