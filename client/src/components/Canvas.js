@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { drawGrid, drawCircle } from '../canvas-utils';
 import React3 from 'react-three-renderer';
 import * as THREE from 'three';
+import { project } from '../geometry';
 
 import './Canvas.css';
 
