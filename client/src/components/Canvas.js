@@ -29,13 +29,13 @@ export class Canvas extends Component {
       cameraZ: 0,
       rot: 0,
       distance: 10,
-      hardCodedItems: {
-        polygons: [[0.4, 0, 0, 0, 0, 0.2, 0, 0.3, 0, 0, 0.2, 0.3]],
-        spheres: [],
-        markers: [],
-        lines: [],
-        aid_spheres: [],
-      }
+      hardCodedItems: [
+        {
+          center: new THREE.Vector3(0, 0, 0),
+          radius: 30,
+          type: 'Sphere',
+        }
+      ],
     };
 
     this._onAnimate = () => {
@@ -54,7 +54,7 @@ export class Canvas extends Component {
     };
 
     this._raycaster = new THREE.Raycaster();
-    this.fog = new THREE.Fog(0x001525, 10, 20);
+    this.fog = new THREE.Fog(0x001525, 10, 15);
 
     this.lightPosition = new THREE.Vector3(0, 500, 2000);
     this.lightTarget = new THREE.Vector3(0, 0, 0);
@@ -79,45 +79,74 @@ export class Canvas extends Component {
     }));
   }
 
-  renderPointLight() {
+  renderLight() {
     const d = 20;
     return (
-      <directionalLight
-        color={0xffffff}
-        intensity={1.75}
+      <group>
+        <directionalLight
+          color={0xffffff}
+          intensity={1.3}
 
-        castShadow
+          castShadow
 
-        shadowMapWidth={1024}
-        shadowMapHeight={1024}
+          shadowMapWidth={1024}
+          shadowMapHeight={1024}
 
-        shadowCameraLeft={-d}
-        shadowCameraRight={d}
-        shadowCameraTop={d}
-        shadowCameraBottom={-d}
+          shadowCameraLeft={-d}
+          shadowCameraRight={d}
+          shadowCameraTop={d}
+          shadowCameraBottom={-d}
 
-        shadowCameraFar={3 * d}
-        shadowCameraNear={d}
+          shadowCameraFar={3 * d}
+          shadowCameraNear={d}
 
-        position={this.lightPosition}
-        lookAt={this.lightTarget}
-      />
+          position={new THREE.Vector3(0, 500, 2000)}
+          lookAt={new THREE.Vector3(-100, 100, 0)}
+        />
+        <directionalLight
+          color={0xffffff}
+          intensity={1.3}
+
+          castShadow
+
+          shadowMapWidth={1024}
+          shadowMapHeight={1024}
+
+          shadowCameraLeft={-d}
+          shadowCameraRight={d}
+          shadowCameraTop={d}
+          shadowCameraBottom={-d}
+
+          shadowCameraFar={3 * d}
+          shadowCameraNear={d}
+
+          position={new THREE.Vector3(1000, 1000, -100)}
+          lookAt={new THREE.Vector3(-100, 100, 0)}
+        />
+        <ambientLight
+          intensity={0.25}
+          position={new THREE.Vector3(10, 10, 10)}
+          lookAt={new THREE.Vector3(0, 0, 0)}
+        />
+
+
+      </group>
     );
   }
 
   renderSphere(item) {
-    item['opacity'] = 0.7;
-    return this.renderSphereInternal(item);
+	  item['opacity'] = 0.5;
+	  return this.renderSphereInternal(item);
   }
 
   renderCursor(cursor) {
-    var sphere = {
-      color: 0x0000ff,
-      opacity: 1,
-      center: cursor,
-      radius: 0.1,
-    }
-    return this.renderSphereInternal(sphere);
+	  var sphere = {
+		color: 0x0000ff,
+		opacity: 1,
+		center: cursor,
+		radius: 0.1,
+	  }
+	  return this.renderSphereInternal(sphere);
   }
 
   renderMarker(item) {
@@ -128,6 +157,7 @@ export class Canvas extends Component {
   }
 
   renderSphereInternal(item) {
+    console.log(item["center"], item.radius)
     return (
       <mesh 
         castShadow
@@ -138,9 +168,9 @@ export class Canvas extends Component {
           widthSegments = {10}
           heightSegments = {10}
         />
-        <meshPhongMaterial
+        <meshNormalMaterial
           color={item["color"]}
-          opacity={item["opacity"]}
+  		    opacity={item["opacity"]}
         />
       </mesh>
     );
@@ -200,7 +230,6 @@ export class Canvas extends Component {
     return;
   }
 
-
   renderObjects(items) {
     return (
       items.map(
@@ -214,8 +243,8 @@ export class Canvas extends Component {
       width,
       height,
       items,
-      currentItem,
-      cursor
+	    currentItem,
+	    cursor
     } = this.props;
 
     const { cameraX, cameraZ } = this.state;
@@ -276,8 +305,8 @@ export class Canvas extends Component {
             color={0x505050}
           />
 
-        { this.renderPointLight() }
-        { this.renderObjects(items) }
+        { this.renderLight() }
+        { this.renderObjects(this.state.hardCodedItems) }
         { this.renderCursor(cursor) }
         { this.renderCurrentItem(currentItem) }
       </scene>
