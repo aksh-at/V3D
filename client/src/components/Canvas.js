@@ -78,7 +78,7 @@ export class Canvas extends Component {
   renderPointLight() {
     const d = 20;
     return (
-		  <directionalLight
+      <directionalLight
         color={0xffffff}
         intensity={1.75}
 
@@ -102,29 +102,29 @@ export class Canvas extends Component {
   }
 
   renderSphere(item) {
-	  item['color'] = "0x00ff00";
-	  return this.renderSphereInternal(item);
+    item['color'] = "0x00ff00";
+    return this.renderSphereInternal(item);
   }
 
   renderMarker(item) {
-	  item['color'] = "0xff0000";
-	  return this.renderSphereInternal(item);
+    item['color'] = "0xff0000";
+    return this.renderSphereInternal(item);
   }
 
   renderSphereInternal(item) {
     return (
-      <mesh
-    		castShadow
-    		position={item["centre"]}
+      <mesh 
+        castShadow
+        position={item["centre"]}
       >
         <sphereGeometry
           radius={item["radius"]}
-    		  widthSegments = {10}
-    		  heightSegments = {10}
+          widthSegments = {10}
+          heightSegments = {10}
         />
         <meshPhongMaterial
-  		    color={item["color"]}
-  	    />
+          color={item["color"]}
+        />
       </mesh>
     );
   }
@@ -164,12 +164,24 @@ export class Canvas extends Component {
     );
   }
 
+  renderExtrusion(extrusion) {
+    const {
+      phase, // either 'base' or 'up'
+      basePoints,
+      basePointsPreview,
+      height
+    } = extrusion;
+
+    return;
+  }
+
+
   renderObjects(items) {
     return (
-	  items.map(
-      item => (this['render' + item.type](item))
-    )
-	);
+      items.map(
+        item => (this['render' + item.type](item))
+      )
+    );
   }
 
   render() {
@@ -195,34 +207,34 @@ export class Canvas extends Component {
 
         onAnimate={this._onAnimate}
 
-  	    clearColor={this.fog.color}
+        clearColor={this.fog.color}
 
-    	  gammaInput
-    	  gammaOutput
-    	  shadowMapEnabled
+        gammaInput
+        gammaOutput
+        shadowMapEnabled
       >
         <scene
-      		fog = {this.fog}
-    		>
+          fog = {this.fog}
+        >
           <perspectiveCamera
             name="camera"
 
-      		  fov={this.state.fov || 30}
-        		aspect={width / height}
-        		near={0.5}
-        		far={10000}
+            fov={this.state.fov || 30}
+            aspect={width / height}
+            near={0.5}
+            far={10000}
 
-      		  position={this.cameraPosition}
-      		  quaternion={this.cameraQuaternion}
+            position={this.cameraPosition}
+            quaternion={this.cameraQuaternion}
             lookAt={new THREE.Vector3(0,2,0)}
           />
-    		  <mesh
+          <mesh
             castShadow
             receiveShadow
 
             quaternion={this.groundQuaternion}
           >
-      		  <planeBufferGeometry
+            <planeBufferGeometry
               width={100}
               height={100}
               widthSegments={1}
@@ -236,10 +248,9 @@ export class Canvas extends Component {
             color={0x505050}
           />
 
-          { this.renderPointLight() }
-          { this.renderObjects(items) }
-
-        </scene>
+        { this.renderPointLight() }
+        { this.renderObjects(items) }
+      </scene>
       </React3>
     );
   }

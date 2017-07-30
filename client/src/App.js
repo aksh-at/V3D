@@ -5,7 +5,6 @@ import { Art, ViewSelector, Webcam, Sim, Button } from './components';
 import io from 'socket.io-client';
 import './App.css';
 
-
 class App extends Component {
   constructor() {
     super();
@@ -86,6 +85,7 @@ class App extends Component {
         <Button text="Trace [1]" selected={mode === 'trace'} onSelect={() => this.changeMode('trace')}/>
         <Button text="Polyhedron [2]" selected={mode === 'polyhedron'} onSelect={() => this.changeMode('polyhedron')}/>
         <Button text="Sphere [3]" selected={mode === 'sphere'} onSelect={() => this.changeMode('sphere')}/>
+        <Button text="Extrusion [4]" selected={mode === 'extrusion'} onSelect={() => this.changeMode('extrusion')}/>
         <br />
         <h4>Controls</h4>
         <Button text="Click [Q]"  onSelect={() => {this.onClick()}} ref="clickButton" flashy={true}/>
@@ -109,6 +109,7 @@ class App extends Component {
         <KeyHandler keyEventName={KEYDOWN} keyValue="1" onKeyHandle={() => this.changeMode('trace')} />
         <KeyHandler keyEventName={KEYDOWN} keyValue="2" onKeyHandle={() => this.changeMode('polyhedron')} />
         <KeyHandler keyEventName={KEYDOWN} keyValue="3" onKeyHandle={() => this.changeMode('sphere')} />
+        <KeyHandler keyEventName={KEYDOWN} keyValue="4" onKeyHandle={() => this.changeMode('extrusion')} />
         <KeyHandler keyEventName={KEYDOWN} keyValue="q" onKeyHandle={() => this.refs.clickButton.focus() || this.refs.clickButton.click()}/>
         <KeyHandler keyEventName={KEYDOWN} keyValue="w" onKeyHandle={() => this.refs.submitButton.focus() || this.refs.submitButton.click()}/>
         <KeyHandler keyEventName={KEYDOWN} keyValue="e" onKeyHandle={() => this.refs.cancelButton.focus() || this.refs.cancelButton.click()}/>
@@ -168,7 +169,7 @@ class App extends Component {
         </div>
         <div className="col-sm-6 end-column">
           <h3>Your Sketch</h3>
-          <Art ref="art"/>
+          <Art ref="art" mode={mode}/>
         </div>
       </div>
     </div>

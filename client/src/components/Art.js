@@ -19,19 +19,44 @@ export class Art extends Component {
     super();
     this.state = {
       items: [], // items = [{type: 'sphere', center: { x, y, z }, { type: 'polyhedron', complete: false }]
-      mode: 'sphere',
       currentItem: null,
     };
   }
 
+  componentWillReceiveProps(props) {
+    console.log(props.mode, this.props.mode);
+    if (props.mode !== this.props.mode) {
+      // discard everything
+      this.onCancel();
+    }
+  }
+
+  // In theory, these state transitions could be done in redux
+  // let's pretend we're doing that
+  // and write these to be as reducer-like as possible
+
   onClick(point) {
-    const { currentItem, mode } = this.state;
+    const { currentItem } = this.state;
+    const { mode } = this.props;
     let newItem;
     if (mode === 'sphere') {
       newItem = {
         type: 'Sphere',
         center: point,
         radius: 0
+      }
+    } else if (mode === 'extrusion') {
+      const { basePoints = [], phase = 'base' } = currentItem || {};
+      if (phase === 'base') {
+        newItem = {
+          type: 'Extrusion',
+          phase: 'base',
+          basePoints: basePoints.concat([point]),
+          basePointsPreview: basePoints.concat([point]),
+        };
+      } else if (phase === 'up') {
+        // no op
+        newItem = currentItem;
       }
     }
     this.setState({
@@ -40,19 +65,37 @@ export class Art extends Component {
   }
 
   onHover(point) {
-    const { currentItem, mode } = this.state;
+    const { currentItem } = this.state;
+    const { mode } = this.props;
+    this.setState({
+      cursor: point
+    });
     if (!currentItem) {
-      this.setState({
-        cursor: point
-      });
       return;
     }
 
     let newItem;
     if (mode === 'sphere') {
+      const { type, center } = currentItem;
       newItem = {
         ...currentItem,
-        radius: dist(point, currentItem.center),
+        radius: dist(point, center),
+      }
+    } else if (mode === 'extrusion') {
+      // TODO: the state transitions here are kind of tricky
+      // eventually, the basePoints should be 2D points...
+      const { basePoints = [], phase = 'base' } = currentItem;
+      if (phase === 'base') {
+        newItem = {
+          ...currentItem,
+          basePointsPreview: basePoints.concat([point]),
+        };
+      } else if (phase === 'up') {
+        newItem = {
+          ...currentItem,
+          phase: 'up',
+          height: dist(point, basePoints[0]),
+        }
       }
     }
     this.setState({
@@ -66,15 +109,37 @@ export class Art extends Component {
 
   onCommit() {
     const { items, currentItem } = this.state;
+    const { mode } = this.props;
     if (!currentItem) return;
-    this.setState({
-      items: items.concat(currentItem),
-      currentItem: null
-    });
-  }
-
-  onSetMode(mode) {
-    this.setState({ mode });
+    if (mode === 'sphere') {
+      this.setState({
+        items: items.concat(currentItem),
+        currentItem: null
+      });
+    } else if (mode === 'extrusion') {
+      const { phase, type, basePoints = [] } = currentItem;
+      if (phase === 'base') {
+        let newItem;
+        if (basePoints.length >= 3) { // must be at least 3
+          newItem = {
+            type: type,
+            phase: 'up',
+            basePoints: basePoints,
+            height: 0,
+          };
+        } else {
+          newItem = currentItem;
+        }
+        this.setState({
+          currentItem: newItem
+        });
+      } else if (phase === 'up') {
+        this.setState({
+          items: items.concat(currentItem),
+          currentItem: null
+        });
+      }
+    }
   }
 
   zoom(delta) {
