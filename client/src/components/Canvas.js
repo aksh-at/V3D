@@ -102,20 +102,22 @@ export class Canvas extends Component {
   }
 
   renderSphere(item) {
-	  item['color'] = 0x00ff00;
 	  item['opacity'] = 0.7;
 	  return this.renderSphereInternal(item);
   }
 
-  renderCursor(item) {
-	  item['color'] = 0x0000ff;
-	  item['opacity'] = 1;
-	  return this.renderSphereInternal(item);
+  renderCursor(cursor) {
+	  var sphere = {
+		color: 0x0000ff,
+		opacity: 1,
+		center: cursor,
+		radius: 0.1,
+	  }
+	  return this.renderSphereInternal(sphere);
   }
 
   renderMarker(item) {
 	  item['color'] = 0xff0000;
-	  item['opacity'] = 1;
 	  return this.renderSphereInternal(item);
   }
 
@@ -138,6 +140,19 @@ export class Canvas extends Component {
     );
   }
 
+  renderObject(item) {
+	  item['color'] = 0x00ff00;
+	  item['opacity'] = 1;
+	  return this['render' + item.type](item);
+  }
+
+  renderCurrentItem(item) {
+	  if(item) {
+	    item['color'] = 0xff0000;
+		item['opacity'] = 0.5;
+		return this['render' + item.type](item);
+	  }
+  }
 
   renderPolygon(polygon) {
     console.log(polygon);
@@ -173,7 +188,7 @@ export class Canvas extends Component {
   renderObjects(items) {
     return (
       items.map(
-        item => (this['render' + item.type](item))
+        item => (this.renderObject(item))
       )
     );
   }
@@ -183,6 +198,8 @@ export class Canvas extends Component {
       width,
       height,
       items,
+	  currentItem,
+	  cursor
     } = this.props;
 
     const { cameraX, cameraZ } = this.state;
@@ -244,6 +261,8 @@ export class Canvas extends Component {
 
         { this.renderPointLight() }
         { this.renderObjects(items) }
+        { this.renderCursor(cursor) }
+        { this.renderCurrentItem(currentItem) }
       </scene>
       </React3>
     );
