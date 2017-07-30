@@ -6,6 +6,16 @@ import { project } from '../geometry';
 
 import './Canvas.css';
 
+/*
+ * testing project:
+console.log(
+  project(
+  {x:1,y:2,z:3},
+  {x:1,y:2,z:6},
+  {x:1,y:3,z:6},
+  {x:2,y:3,z:6},
+  )); // {x:1,y:2,z:6}
+  */
 export class Canvas extends Component {
   static propTypes = {
     width: React.PropTypes.number.isRequired,
@@ -103,23 +113,23 @@ export class Canvas extends Component {
   }
 
   renderSphere(item) {
-	  item['opacity'] = 0.7;
-	  return this.renderSphereInternal(item);
+    item['opacity'] = 0.7;
+    return this.renderSphereInternal(item);
   }
 
   renderCursor(cursor) {
-	  var sphere = {
-		color: 0x0000ff,
-		opacity: 1,
-		center: cursor,
-		radius: 0.1,
-	  }
-	  return this.renderSphereInternal(sphere);
+    var sphere = {
+      color: 0x0000ff,
+      opacity: 1,
+      center: cursor,
+      radius: 0.1,
+    }
+    return this.renderSphereInternal(sphere);
   }
 
   renderMarker(item) {
-	  item['color'] = 0xff0000;
-	  return this.renderSphereInternal(item);
+    item['color'] = 0xff0000;
+    return this.renderSphereInternal(item);
   }
 
   renderSphereInternal(item) {
@@ -135,24 +145,24 @@ export class Canvas extends Component {
         />
         <meshPhongMaterial
           color={item["color"]}
-  		  opacity={item["opacity"]}
+          opacity={item["opacity"]}
         />
       </mesh>
     );
   }
 
   renderObject(item) {
-	  item['color'] = 0x00ff00;
-	  item['opacity'] = 1;
-	  return this['render' + item.type](item);
+    item['color'] = 0x00ff00;
+    item['opacity'] = 1;
+    return this['render' + item.type](item);
   }
 
   renderCurrentItem(item) {
-	  if(item) {
-	    item['color'] = 0xff0000;
-		item['opacity'] = 0.5;
-		return this['render' + item.type](item);
-	  }
+    if(item) {
+      item['color'] = 0xff0000;
+      item['opacity'] = 0.5;
+      return this['render' + item.type](item);
+    }
   }
 
   renderPolygon(polygon) {
@@ -199,8 +209,8 @@ export class Canvas extends Component {
       width,
       height,
       items,
-	  currentItem,
-	  cursor
+      currentItem,
+      cursor
     } = this.props;
 
     const { cameraX, cameraZ } = this.state;
@@ -265,7 +275,7 @@ export class Canvas extends Component {
         { this.renderCursor(cursor) }
         { this.renderCurrentItem(currentItem) }
       </scene>
-      </React3>
+    </React3>
     );
   }
 }
