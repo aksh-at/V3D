@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
+import KeyHandler, {KEYDOWN} from 'react-key-handler';
 import { Canvas, ViewSelector, Webcam, Sim, Button } from './components';
 import io from 'socket.io-client';
 import './App.css';
+
 
 class App extends Component {
   constructor() {
@@ -35,23 +37,45 @@ class App extends Component {
     this.socket.emit('setpoints', point, new Date(), this.state.view);
   }
 
-  selectButton() {
-    return;
+  changeMode(mode) {
+    this.setState({ mode });
   }
 
-  renderOptions(view) {
+  sendClick() {}
+  sendSubmit() {}
+  sendCancel() {}
+
+  renderOptions(view, mode) {
     return (
       <div>
+        <h4>Mode</h4>
+        <Button text="Trace [1]" selected={mode === 'trace'} onSelect={() => this.changeMode('trace')}/>
+        <Button text="Polyhedron [2]" selected={mode === 'polyhedron'} onSelect={() => this.changeMode('polyhedron')}/>
+        <Button text="Sphere [3]" selected={mode === 'sphere'} onSelect={() => this.changeMode('sphere')}/>
+        <br />
+        <h4>View</h4>
+        <Button text="Click [Space]"  onSelect={() => {this.sendClick()}}/>
+        <Button text="Submit [Tab]"  onSelect={() => {this.sendSubmit()}}/>
+        <Button text="Cancel [ESC]"  onSelect={() => {this.sendCancel()}}/>
+        <br />
         <h4>View</h4>
         <ViewSelector
           view={view}
           onSelect={this._onSelectView}
-        />
-        <br />
-        <h4>Mode</h4>
-        <Button text="Trace" selected={false} onSelect={this.selectButton}/>
-        <Button text="Polyhedron" selected={true} onSelect={this.selectButton}/>
-        <Button text="Sphere" selected={false} onSelect={this.selectButton}/>
+          />
+      </div>
+    );
+  }
+
+  renderKeybindings() {
+    return (
+      <div>
+        <KeyHandler keyEventName={KEYDOWN} keyValue="1" onKeyHandle={() => this.changeMode('trace')} />
+        <KeyHandler keyEventName={KEYDOWN} keyValue="2" onKeyHandle={() => this.changeMode('polyhedron')} />
+        <KeyHandler keyEventName={KEYDOWN} keyValue="3" onKeyHandle={() => this.changeMode('sphere')} />
+        <KeyHandler keyEventName={KEYDOWN} keyCode={32} onKeyHandle={() => this.sendClick()} />
+        <KeyHandler keyEventName={KEYDOWN} keyCode={9} onKeyHandle={() => this.sendSubmit()} />
+        <KeyHandler keyEventName={KEYDOWN} keyCode={27} onKeyHandle={() => this.sendCancel()} />
       </div>
     );
   }
@@ -81,12 +105,13 @@ class App extends Component {
   }
 
   render() {
-    const { debug, items, view } = this.state;
+    const { debug, items, view, mode } = this.state;
 
     return (
       <div className={classnames({
         'dbg': debug
       })}>
+        { this.renderKeybindings() }
       <a
         className={classnames({
           'debug-link': 1,
@@ -104,7 +129,7 @@ class App extends Component {
       <div className="row">
         <div className="col-sm-2 early-column">
           <h3>Options</h3>
-          { this.renderOptions(view) }
+          { this.renderOptions(view, mode) }
         </div>
         <div className="col-sm-5 early-column">
           <h3>Webcam</h3>
