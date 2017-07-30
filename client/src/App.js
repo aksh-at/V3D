@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import classnames from 'classnames';
+import classnames from 'classnames';
 import { Canvas, ViewSelector, Webcam, Sim, Button } from './components';
 import io from 'socket.io-client';
 import './App.css';
@@ -82,53 +82,39 @@ class App extends Component {
     const { debug, items, view } = this.state;
 
     return (
-      <div>
-        <div className="row">
-          <div className="col-sm-2 early-column">
-            <h3>Options</h3>
-            { this.renderOptions(view) }
-          </div>
-          <div className="col-sm-5 early-column">
-            <h3>Webcam</h3>
-            { this.renderWebcam() }
-          </div>
-          <div className="col-sm-5 end-column">
-            <h3>Your Sketch</h3> 
-            { this.renderCanvas(items) }
-          </div>
+      <div className={classnames({
+        'dbg': debug
+      })}>
+      <a
+        className={classnames({
+          'debug-link': 1,
+          'on': debug,
+        })}
+        onClick={() => {
+          this.setState({
+            debug: !debug
+          })
+        }}
+      >
+        debug: { debug ? 'ON' : 'OFF'}
+      </a>
+
+      <div className="row">
+        <div className="col-sm-2 early-column">
+          <h3>Options</h3>
+          { this.renderOptions(view) }
+        </div>
+        <div className="col-sm-5 early-column">
+          <h3>Webcam</h3>
+          { this.renderWebcam() }
+        </div>
+        <div className="col-sm-5 end-column">
+          <h3>Your Sketch</h3>
+          { this.renderCanvas(items) }
         </div>
       </div>
+    </div>
     );
-
-    // return (
-    //   <div
-    //     className={classnames({
-    //       "App": 1,
-    //       "dbg": debug,
-    //     })}>
-    //     <a
-    //       className={classnames({
-    //         'debug-link': 1,
-    //         'on': debug,
-    //       })}
-    //       onClick={() => {
-    //         this.setState({
-    //           debug: !debug
-    //         })
-    //       }} >
-    //       debug: { debug ? 'ON' : 'OFF'}
-    //     </a>
-    //     <div className="main">
-    //       <div className="webcam">
-    //         <span>WEBCAM</span>
-    //       </div>
-    //       <Sketch items={items}/>
-    //       <div className="tools">
-    //         TOOLS
-    //       </div>
-    //     </div>
-    //   </div>
-    // );
   }
 }
 
