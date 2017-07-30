@@ -171,45 +171,46 @@ export class Canvas extends Component {
     	  gammaOutput
     	  shadowMapEnabled
       >
-      <scene
-    		fog = {this.fog}
-  		>
-      <perspectiveCamera
-        name="camera"
+        <scene
+      		fog = {this.fog}
+    		>
+          <perspectiveCamera
+            name="camera"
 
-  		  fov={30}
-    		aspect={width / height}
-    		near={0.5}
-    		far={10000}
+      		  fov={30}
+        		aspect={width / height}
+        		near={0.5}
+        		far={10000}
 
-  		  position={this.cameraPosition}
-  		  quaternion={this.cameraQuaternion}
-      />
-		  <mesh
-        castShadow
-        receiveShadow
+      		  position={this.cameraPosition}
+      		  quaternion={this.cameraQuaternion}
+          />
+    		  <mesh
+            castShadow
+            receiveShadow
 
-        quaternion={this.groundQuaternion}
-      >
-		  <planeBufferGeometry
-        width={100}
-        height={100}
-        widthSegments={1}
-        heightSegments={1}
-      />
-      <meshLambertMaterial
-        color={0x777777}
-      />
-      </mesh>
-      <ambientLight
-        color={0x505050}
-      />
+            quaternion={this.groundQuaternion}
+          >
+      		  <planeBufferGeometry
+              width={100}
+              height={100}
+              widthSegments={1}
+              heightSegments={1}
+            />
+            <meshLambertMaterial
+              color={0x777777}
+            />
+          </mesh>
+          <ambientLight
+            color={0x505050}
+          />
 
-      { this.renderObjects(this.state.items) }
-      { this.renderPointLight() }
-      { this.renderSphere() }
+          { this.renderObjects(this.state.items) }
+          { this.renderPointLight() }
+          { this.renderSphere() }
 
-      </scene>
-    </React3>);
+        </scene>
+      </React3>
+    );
   }
 }
