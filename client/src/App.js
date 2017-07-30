@@ -19,6 +19,7 @@ class App extends Component {
     this._onSendPoint2D = this.onSendPoint2D.bind(this);
     this.socket = io('http://localhost:3001');
     this.socket.on('point', point3D => {
+      console.log('point3D:', point3D);
       this.setState({point3D}, () => {
         this.onHover(point3D);
       });

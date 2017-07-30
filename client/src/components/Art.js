@@ -18,7 +18,7 @@ export class Art extends Component {
   constructor() {
     super();
     this.state = {
-      items: [],
+      items: [], // items = [{type: 'sphere', center: { x, y, z }, { type: 'polyhedron', complete: false }]
       mode: 'sphere',
       currentItem: null,
     };
@@ -29,7 +29,9 @@ export class Art extends Component {
     let newItem;
     if (mode === 'sphere') {
       newItem = {
-        center: point
+        type: 'sphere',
+        center: point,
+        radius: 0
       }
     }
     this.setState({
@@ -49,7 +51,7 @@ export class Art extends Component {
     let newItem;
     if (mode === 'sphere') {
       newItem = {
-        center: currentItem.center,
+        ...currentItem,
         radius: dist(point, currentItem.center),
       }
     }

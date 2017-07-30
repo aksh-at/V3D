@@ -17,6 +17,14 @@ export class Webcam extends Component {
     this.interval = null;
   }
 
+  normalize(point) {
+    const canvas = this.refs.canvas;
+    return {
+      x: point.x / canvas.width,
+      y: point.y / canvas.height,
+    };
+  }
+
   componentDidMount() {
     const canvas = this.refs.canvas;
     const context = canvas.getContext('2d');
@@ -76,7 +84,10 @@ export class Webcam extends Component {
     });
 
     this.interval = setInterval(() => {
-      this.props.onSend && prevPoints.purple && this.props.onSend(prevPoints.purple);
+      const point = prevPoints.purple;
+      if (!point) return;
+      const pointToSend = this.normalize(point)
+      this.props.onSend && this.props.onSend(pointToSend);
     });
   }
 
