@@ -1,17 +1,27 @@
 // don't edit the css file
 // edit the sass file
-.App
+html, body, #root, .App, .dbg, #root>div
+  height: 100%
+
+.toggle
+  opacity: 0
+  &:hover
+    opacity: 1
+
+.dbg .toggle
+  opacity: 1
 
 .constainer
   width: 100% !important
 
 .row
   width: 100% !important
+  height: 100% !important
   &:first-child
     padding-left: 40px
 
 .main
-  display: flex
+  display: fle
   flex-direction: column
 
 .webcam
@@ -39,6 +49,7 @@
   z-index: 2;
   &.on
     color: red
+    opacity: 1
 
 .column
   border-right: thick solid black;

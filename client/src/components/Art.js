@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import {project, convert} from '../geometry';
 import * as THREE from 'three';
 
-
 import { Canvas } from './Canvas';
+import './Art.css';
 
 function minus(A, B) {
   return {x: A.x - B.x, y: A.y - B.y, z: A.z - B.z};

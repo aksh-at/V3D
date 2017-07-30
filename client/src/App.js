@@ -103,7 +103,7 @@ class App extends Component {
         <br />
         <Button text="Camera [`]" selected={this.state.cameraEnabled} onSelect={() => this.switchCamera()}/>
         <Button text="Reset [R]"  onSelect={() => this.resetCamera()} ref="resetButton" flashy={true}/>
-          <br />
+        <br />
         <h4>View</h4>
         <ViewSelector
           view={this.state.view}
@@ -142,7 +142,13 @@ class App extends Component {
 
     return (
       <div className="main">
-        <a href={"#"+realWebcam?'sim':'cam'} onClick={change}>Switch to Simulator vs Webcam</a>
+        <a className='toggle' href={"#"+realWebcam?'sim':'cam'} onClick={change}>
+          {
+            realWebcam
+            ? 'Simulator'
+            : 'Webcam'
+          }
+        </a>
         {camEl}
       </div>
     );

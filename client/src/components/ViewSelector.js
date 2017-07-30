@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Button } from './Button';
-import './ViewSelector.css';
 
 export class ViewSelector extends Component {
   render() {

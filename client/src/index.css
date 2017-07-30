@@ -8,7 +8,7 @@ body {
 
 .early-column,
 .end-column {
-  height: 650px;
+  height: 100%;
   padding-left: 25px; }
 
 .container {
