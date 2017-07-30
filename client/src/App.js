@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import { Sketch } from './components/Sketch';
-import { Button } from './components/Button';
+import { Sketch, ViewSelector, Webcam, Sim, Button } from './components';
 import io from 'socket.io-client';
-import logo from './logo.svg';
 import './App.css';
 
-const socket = io('http://localhost:3001');
-socket.emit('frame', [1, 2, 'hello']);
 class App extends Component {
   constructor() {
     super();
@@ -19,7 +15,21 @@ class App extends Component {
         cy: 20,
         radius: 20,
       }],
+      view: 'main',
     }
+
+    this._onSelectView = this.onSelectView.bind(this);
+    this._onSendPoint = this.onSendPoint.bind(this);
+    this.socket = io('http://localhost:3001');
+  }
+
+  onSelectView(view) {
+    this.setState({view});
+    this.socket.emit('setview', view);
+  }
+
+  onSendPoint(point) {
+    this.socket.emit('setpoints', point, new Date, this.state.view);
   }
 
   selectButton() {
@@ -41,11 +51,22 @@ class App extends Component {
     );
   }
 
-  renderWebcam() {
+  renderWebcam(view) {
     return (
-      <span>
-        Lol webcam goes here
-      </span>
+      <div className="main">
+        <ViewSelector
+          view={view}
+          onSelect={this._onSelectView}
+        />
+        <Sim
+          width={300}
+          height={300}
+          onSend={this._onSendPoint}
+        />
+        <div className="webcam">
+          <Webcam/>
+        </div>
+      </div>
     );
   }
 
@@ -56,7 +77,7 @@ class App extends Component {
   }
 
   render() {
-    const { debug, items } = this.state;
+    const { debug, items, view } = this.state;
 
     return (
       <div className="container">
@@ -67,7 +88,7 @@ class App extends Component {
           </div>
           <div className="col-sm-4 column">
             <h3>Webcam</h3>
-            { this.renderWebcam() }
+            { this.renderWebcam(view) }
           </div>
           <div className="col-sm-4 end-column">
             <h3>Your Sketch</h3> 
