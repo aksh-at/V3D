@@ -7,7 +7,7 @@ import './Canvas.css';
 
 var geometry = new PlaneBufferGeometry( 2, 2 );
 
-const { Renderer, Scene, Mesh, Object3d, PerspectiveCamera } = ReactTHREE;
+const { Renderer, Scene, Mesh, PerspectiveCamera } = ReactTHREE;
 
 class Wavey extends React.Component {
   constructor(props) {
