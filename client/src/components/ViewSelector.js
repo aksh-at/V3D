@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
 import { Button } from './Button';
-import classnames from 'classnames';
-import './view-selector.css';
+import './ViewSelector.css';
 
 export class ViewSelector extends Component {
-  constructor() {
-    super();
-  }
-
   render() {
     const { view, onSelect } = this.props;
 

@@ -32,7 +32,7 @@ class App extends Component {
   }
 
   onSendPoint(point) {
-    this.socket.emit('setpoints', point, new Date, this.state.view);
+    this.socket.emit('setpoints', point, new Date(), this.state.view);
   }
 
   selectButton() {
@@ -66,7 +66,7 @@ class App extends Component {
 
     return (
       <div className="main">
-        <a href="#" onClick={change}>Switch to Simulator vs Webcam</a>
+        <a href={"#"+realWebcam?'sim':'cam'} onClick={change}>Switch to Simulator vs Webcam</a>
         {camEl}
       </div>
     );
