@@ -77,11 +77,19 @@ export class Art extends Component {
     this.setState({ mode });
   }
 
+  zoom(delta) {
+    this.refs.canvas.zoom(delta);
+  }
+
+  rotateCamera(delta) {
+    this.refs.canvas.rotateCamera(delta);
+  }
+
   render() {
     const { items, currentItem, cursor } = this.state;
     return (
       <div className="art">
-        <Canvas width={500} height={500} items={items} currentItem={currentItem} cursor={cursor}/>
+        <Canvas width={500} height={500} items={items} currentItem={currentItem} cursor={cursor} ref="canvas"/>
         <div className="items">
           <h4>Items</h4>
           {items.map(item => (

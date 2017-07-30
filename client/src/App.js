@@ -13,10 +13,12 @@ class App extends Component {
       debug: false,
       view: 'main',
       realWebcam: true,
+      mode: null,
     }
 
     this._onSelectView = this.onSelectView.bind(this);
     this._onSendPoint2D = this.onSendPoint2D.bind(this);
+    this._onMove = this.onMove.bind(this);
     this.socket = io('http://localhost:3001');
     this.socket.on('point', point3D => {
       console.log('point3D:', point3D);
@@ -60,6 +62,14 @@ class App extends Component {
     this.socket.emit('setpoints', point2D, new Date(), this.state.view);
   }
 
+  onMove({ x, y, color }) {
+    const { mode } = this.state;
+    if (mode !== 'camera') return;
+    const art = this.refs.art;
+    art.zoom(y);
+    art.rotateCamera(x);
+  }
+
   changeMode(mode) {
     this.setState({ mode });
   }
@@ -72,6 +82,7 @@ class App extends Component {
     return (
       <div>
         <h4>Mode</h4>
+        <Button text="Camera [`]" selected={mode === 'camera'} onSelect={() => this.changeMode('camera')}/>
         <Button text="Trace [1]" selected={mode === 'trace'} onSelect={() => this.changeMode('trace')}/>
         <Button text="Polyhedron [2]" selected={mode === 'polyhedron'} onSelect={() => this.changeMode('polyhedron')}/>
         <Button text="Sphere [3]" selected={mode === 'sphere'} onSelect={() => this.changeMode('sphere')}/>
@@ -93,12 +104,14 @@ class App extends Component {
   renderKeybindings() {
     return (
       <div>
+        <KeyHandler keyEventName={KEYDOWN} keyCode={27} onKeyHandle={() => this.changeMode(null)} />
+        <KeyHandler keyEventName={KEYDOWN} keyValue="`" onKeyHandle={() => this.changeMode('camera')} />
         <KeyHandler keyEventName={KEYDOWN} keyValue="1" onKeyHandle={() => this.changeMode('trace')} />
         <KeyHandler keyEventName={KEYDOWN} keyValue="2" onKeyHandle={() => this.changeMode('polyhedron')} />
         <KeyHandler keyEventName={KEYDOWN} keyValue="3" onKeyHandle={() => this.changeMode('sphere')} />
-          <KeyHandler keyEventName={KEYDOWN} keyValue="q" onKeyHandle={() => this.refs.clickButton.focus() || this.refs.clickButton.click()}/>
-            <KeyHandler keyEventName={KEYDOWN} keyValue="w" onKeyHandle={() => this.refs.submitButton.focus() || this.refs.submitButton.click()}/>
-              <KeyHandler keyEventName={KEYDOWN} keyValue="e" onKeyHandle={() => this.refs.cancelButton.focus() || this.refs.cancelButton.click()}/>
+        <KeyHandler keyEventName={KEYDOWN} keyValue="q" onKeyHandle={() => this.refs.clickButton.focus() || this.refs.clickButton.click()}/>
+        <KeyHandler keyEventName={KEYDOWN} keyValue="w" onKeyHandle={() => this.refs.submitButton.focus() || this.refs.submitButton.click()}/>
+        <KeyHandler keyEventName={KEYDOWN} keyValue="e" onKeyHandle={() => this.refs.cancelButton.focus() || this.refs.cancelButton.click()}/>
       </div>
     );
   }
@@ -106,7 +119,7 @@ class App extends Component {
   renderWebcam() {
     const { realWebcam } = this.state;
     const camEl = realWebcam
-      ? <Webcam onSend={this._onSendPoint2D}/>
+      ? <Webcam onSend={this._onSendPoint2D} onMove={this._onMove}/>
       : <Sim width={400} height={400} onSend={this._onSendPoint2D} />;
     const change = e => {
       e.preventDefault();

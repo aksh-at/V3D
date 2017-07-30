@@ -12,11 +12,35 @@ export class Canvas extends Component {
     items: React.PropTypes.object.isRequired,
   };
 
-  constructor(props, context) { 
+  constructor(props, context) {
     super(props, context);
 
     // construct the position vector here, because if we use 'new' within render,
     // React will think that things have changed when they have not.
+
+    this.state = {
+      cubeRotation: new THREE.Euler(),
+      fov: 30,
+      cameraX: 10,
+      cameraZ: 0,
+      rot: 0,
+      distance: 10,
+    };
+
+    this._onAnimate = () => {
+      // we will get this callback every frame
+
+      // pretend cubeRotation is immutable.
+      // this helps with updates and pure rendering.
+      // React will be sure that the rotation has now updated.
+      this.setState({
+        cubeRotation: new THREE.Euler(
+          this.state.cubeRotation.x + 0.1,
+          this.state.cubeRotation.y + 0.1,
+          0
+        ),
+      });
+    };
 
     this._raycaster = new THREE.Raycaster();
     this.fog = new THREE.Fog(0x001525, 10, 20);
@@ -25,7 +49,6 @@ export class Canvas extends Component {
     this.lightTarget = new THREE.Vector3(0, 0, 0);
     this.groundQuaternion = new THREE.Quaternion()
       .setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
-    this.cameraPosition = new THREE.Vector3(10, 2, 0);
     this.spherePosition = new THREE.Vector3(0, 3, 0);
     this.cameraQuaternion = new THREE.Quaternion()
       .setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
@@ -39,6 +62,20 @@ export class Canvas extends Component {
         aid_spheres: [],
       }
     };
+  }
+
+  zoom(delta) {
+    this.setState(({distance}) => ({ distance: distance + delta * 0.05}));
+  }
+
+  rotateCamera(delta) {
+    delta *= 0.05;
+
+    this.setState(({cameraX, cameraZ, rot, distance}) => ({
+      cameraX: Math.cos(rot + delta) * distance,
+      cameraZ: Math.sin(rot + delta) * distance,
+      rot: rot + delta,
+    }));
   }
 
   renderPointLight() {
@@ -79,7 +116,7 @@ export class Canvas extends Component {
 
   renderSphereInternal(item) {
     return (
-      <mesh 
+      <mesh
     		castShadow
     		position={item["centre"]}
       >
@@ -131,7 +168,6 @@ export class Canvas extends Component {
   }
 
   renderObjects(items) {
-	console.log(items);
     return (
 	  items.map(
       item => (this['render' + item.type](item))
@@ -145,6 +181,9 @@ export class Canvas extends Component {
       height,
       items,
     } = this.props;
+
+    const { cameraX, cameraZ } = this.state;
+    this.cameraPosition = new THREE.Vector3(cameraX, 2, cameraZ);
 
     // or you can use:
     // width = window.innerWidth
@@ -171,13 +210,14 @@ export class Canvas extends Component {
           <perspectiveCamera
             name="camera"
 
-      		  fov={30}
+      		  fov={this.state.fov || 30}
         		aspect={width / height}
         		near={0.5}
         		far={10000}
 
       		  position={this.cameraPosition}
       		  quaternion={this.cameraQuaternion}
+            lookAt={new THREE.Vector3(0,2,0)}
           />
     		  <mesh
             castShadow
