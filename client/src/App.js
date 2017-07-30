@@ -33,15 +33,18 @@ class App extends Component {
   }
 
   onCancel() {
+    const art = this.refs.art;
     const { point3D } = this.state;
     art.onClick(point3D);
   }
 
   onCommit() {
+    const art = this.refs.art;
     art.onCommit();
   }
 
   onHover() {
+    const art = this.refs.art;
     const { point3D } = this.state;
     art.onHover(point3D);
   }

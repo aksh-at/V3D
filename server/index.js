@@ -30,16 +30,6 @@ function getLastPoint() {
   }
 }
 
-function getUpdates() {
-	return {
-		polygons: polygons,
-		spheres: spheres,
-		markers: modes[currentMode].getMarkers(),
-		lines: modes[currentMode].getLines(),
-		aid_spheres: modes[currentMode].getAidSpheres(),
-	}
-}
-
 function update() {
   io.sockets.emit('point', getLastPoint());
 }
