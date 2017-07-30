@@ -1,4 +1,4 @@
-import math from 'math';
+import math from './math';
 
 const server = require('http').createServer();
 const io = require('socket.io')(server);
@@ -49,7 +49,7 @@ class DrawPolygon  {
 }
 
 const modes = {
-  draw_polygon: new DrawPolygon()
+  draw_polygon: new DrawPolygon(),
   draw_sphere: new DrawSphere()
 };
 

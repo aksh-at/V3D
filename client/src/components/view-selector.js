@@ -19,7 +19,7 @@ export class ViewSelector extends Component {
           </b>
         </span>
         <div className='buttons'>
-          {['Main', 'Side'].map((viewStr, i) => (
+          {['main', 'side'].map((viewStr, i) => (
             <button
               key={i}
               className={classnames({

@@ -12,7 +12,6 @@ export class Sim extends Component {
     };
     this._onMouseMove = this.onMouseMove.bind(this);
     this._onMouseClick = this.onMouseClick.bind(this);
-    this._sendEvents = debounce(this.sendEvents.bind(this), 500);
 
     this.lastX = 0;
     this.lastY = 0;
@@ -45,13 +44,7 @@ export class Sim extends Component {
 
   onMouseClick(e) {
     e.stopPropagation();
-    this.buffer.push({ x: this.lastX, y: this.lastY });
-    this._sendEvents();
-  }
-
-  sendEvents() {
-    this.props.onSend(this.buffer);
-    this.buffer = [];
+    this.props.onSend({ x: this.lastX, y: this.lastY });
   }
 
   render() {

@@ -15,11 +15,11 @@ class App extends Component {
         cy: 20,
         radius: 20,
       }],
-      view: null,
+      view: 'main',
     }
 
     this._onSelectView = this.onSelectView.bind(this);
-    this._onSendPoints = this.onSendPoints.bind(this);
+    this._onSendPoint = this.onSendPoint.bind(this);
     this.socket = io('http://localhost:3001');
   }
 
@@ -28,8 +28,8 @@ class App extends Component {
     this.socket.emit('setview', view);
   }
 
-  onSendPoints(points) {
-    this.socket.emit('setpoints', points);
+  onSendPoint(point) {
+    this.socket.emit('setpoints', point, new Date, this.state.view);
   }
 
   render() {
@@ -61,7 +61,7 @@ class App extends Component {
           <Sim
             width={300}
             height={300}
-            onSend={this._onSendPoints}
+            onSend={this._onSendPoint}
           />
           <div className="webcam">
             <Webcam/>
