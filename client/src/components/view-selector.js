@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button } from './Button';
 import classnames from 'classnames';
 import './view-selector.css';
 
@@ -12,26 +13,9 @@ export class ViewSelector extends Component {
 
     return (
       <div className='view-selector'>
-        <span>
-          Current View:{' '}
-          <b>
-            { view || 'None' }
-          </b>
-        </span>
         <div className='buttons'>
-          {['main', 'side'].map((viewStr, i) => (
-            <button
-              key={i}
-              className={classnames({
-                selected: viewStr === view
-              })}
-              onClick={()=>{
-                onSelect(viewStr);
-              }}
-            >
-              {viewStr}
-            </button>
-          ))}
+          <Button text='main' selected={view === 'main'} onSelect={onSelect} />
+          <Button text='side' selected={view === 'side'} onSelect={onSelect} />
         </div>
       </div>
     );

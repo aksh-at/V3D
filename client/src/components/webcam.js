@@ -134,6 +134,7 @@ var colorSamples = {
 };
 
 function dist(p1, p2) {
+  if (!p1 || !p2) return 99999999;
   var xdiff = p1.x - p2.x;
   var ydiff = p1.y - p2.y;
 

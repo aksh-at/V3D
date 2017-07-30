@@ -3,6 +3,17 @@ import debounce from 'debounce';
 import classnames from 'classnames';
 import './sim.css';
 
+function getAbsoluteOffset(el) {
+  let left = 0, top = 0;
+  while (el) {
+    left += el.offsetLeft;
+    top += el.offsetTop;
+    el = el.offsetParent;
+  }
+
+  return { left, top };
+}
+
 export class Sim extends Component {
   constructor() {
     super();
@@ -35,8 +46,9 @@ export class Sim extends Component {
     let x = e.pageX,
       y = e.pageY;
     const t = this.refs.box;
-    x -= t.offsetLeft;
-    y -= t.offsetTop;
+    const offsets = getAbsoluteOffset(t);
+    x -= offsets.left;
+    y -= offsets.top;
     x /= width;
     y /= height;
     this.hover({ x, y });

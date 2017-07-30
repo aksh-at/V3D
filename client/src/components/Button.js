@@ -13,10 +13,13 @@ export class Button extends Component {
   		if (this.state.selected) {
   			classes += " btn-info active"
   		}
+
   		return (
   			<div className="option-button">
-
-  				<button type="button" className={classes}>
+  				<button type="button" 
+            className={classes} 
+            onClick={()=>{this.props.onSelect(this.props.text);}}
+          >
   					{ this.props.text }
   				</button>
   			</div>

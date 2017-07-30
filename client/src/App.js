@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import classnames from 'classnames';
+// import classnames from 'classnames';
 import { Sketch, ViewSelector, Webcam, Sim, Button } from './components';
 import io from 'socket.io-client';
 import './App.css';
@@ -16,6 +16,7 @@ class App extends Component {
         radius: 20,
       }],
       view: 'main',
+      mode: 'polyhedron',
     }
 
     this._onSelectView = this.onSelectView.bind(this);
@@ -24,6 +25,7 @@ class App extends Component {
   }
 
   onSelectView(view) {
+    console.log('onSelectView', view);
     this.setState({view});
     this.socket.emit('setview', view);
   }
@@ -36,12 +38,14 @@ class App extends Component {
     return;
   }
 
-  renderOptions() {
+  renderOptions(view) {
     return (
       <div>
-        <h4>Screen</h4>
-        <Button text="Main" selected={true} onSelect={this.selectButton}/>
-        <Button text="Side" selected={false} onSelect={this.selectButton}/>
+        <h4>View</h4>
+        <ViewSelector
+          view={view}
+          onSelect={this._onSelectView}
+        />
         <br />
         <h4>Mode</h4>
         <Button text="Trace" selected={false} onSelect={this.selectButton}/>
@@ -51,13 +55,9 @@ class App extends Component {
     );
   }
 
-  renderWebcam(view) {
+  renderWebcam() {
     return (
       <div className="main">
-        <ViewSelector
-          view={view}
-          onSelect={this._onSelectView}
-        />
         <Sim
           width={300}
           height={300}
@@ -84,11 +84,11 @@ class App extends Component {
         <div className="row">
           <div className="col-sm-2 early-column">
             <h3>Options</h3>
-            { this.renderOptions() }
+            { this.renderOptions(view) }
           </div>
           <div className="col-sm-4 early-column">
             <h3>Webcam</h3>
-            { this.renderWebcam(view) }
+            { this.renderWebcam() }
           </div>
           <div className="col-sm-4 end-column">
             <h3>Your Sketch</h3> 
