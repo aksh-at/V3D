@@ -24,7 +24,6 @@ export class Art extends Component {
   }
 
   componentWillReceiveProps(props) {
-    console.log(props.mode, this.props.mode);
     if (props.mode !== this.props.mode) {
       // discard everything
       this.onCancel();
@@ -112,7 +111,7 @@ export class Art extends Component {
         pointsPreview: points.concat([point]),
       };
     } else {
-      console.log('onHover: unknown mode: ' + mode);
+      console.warn('onHover: unknown mode: ' + mode);
     }
 
     this.setState({

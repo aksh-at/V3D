@@ -71,7 +71,7 @@ export class Canvas extends Component {
   }
 
   rotateCamera(delta) {
-    delta *= 0.01;
+    delta *= 0.03;
 
     this.setState(({cameraX, cameraZ, rot, distance}) => ({
       cameraX: Math.cos(rot + delta) * distance,
@@ -207,7 +207,6 @@ export class Canvas extends Component {
   }
 
   renderPolygon(polygon) {
-    console.log(polygon);
     return (
       <mesh
         castShadow
@@ -260,7 +259,6 @@ export class Canvas extends Component {
     // width = window.innerWidth
     // height = window.innerHeight
 
-    console.log('fog color:', this.fog.color);
     return (
       <React3
         antialias
