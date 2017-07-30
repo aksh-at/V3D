@@ -20,9 +20,19 @@ class DrawSphere  {
 		this.curSphere["centre"] = point;
 	}
 
+	getMarkers() {
+		return [this.curSphere["centre"]];
+	}
+
+	getAidSpheres() {
+		return [this.curSphere];
+	}
+
+	getLines() { return []; }
+
 	submit(point) {
 		if ("centre" in curSphere) {
-			curSphere["radius"] = math.dist(point, curSphere["centre"]);
+			this.curSphere["radius"] = math.dist(point, curSphere["centre"]);
 			spheres.push(curSphere);
 			reset();
 		}
@@ -40,6 +50,20 @@ class DrawPolygon  {
 
 	click(point) {
 		this.curShape.push(point);
+	}
+
+	getMarkers() {
+		return this.curShape;
+	}
+
+	getAidSpheres() { return []; }
+
+	getLines() {
+		lines = [];
+		for (i = 0; i < (this.curShape.length-1); i++) {
+			lines.push([this.curShape[i], this.curShape[i+1]]);
+		}
+		return lines;
 	}
 
 	submit(point) {
@@ -93,6 +117,9 @@ function processCommand(type) {
 function update() {
   io.sockets.emit('polygons', polygons);
   io.sockets.emit('spheres', spheres);
+  io.sockets.emit('markers', modes[currentMode].getMarkers());
+  io.sockets.emit('lines', modes[currentMode].getLines());
+  io.sockets.emit('aid_spheres', modes[currentMode].getAidSpheres());
 }
 
 io.on('connection', function(client){
