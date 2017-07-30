@@ -58,7 +58,7 @@ class App extends Component {
 
   renderWebcam() {
     const { realWebcam } = this.state;
-    const camEl = realWebcam ? <Webcam/> : <Sim width={500} height={500} onSend={this._onSendPoint} />;
+    const camEl = realWebcam ? <Webcam/> : <Sim width={400} height={400} onSend={this._onSendPoint} />;
     const change = e => {
       e.preventDefault();
       this.setState({realWebcam: !realWebcam});
