@@ -5,6 +5,8 @@ import './webcam.css';
 
 const tracking = window.tracking;
 
+const threshold = 10;
+
 export class Webcam extends Component {
   constructor(props) {
     super(props);
@@ -66,6 +68,18 @@ export class Webcam extends Component {
         const point = {x, y, color};
         if (!selectedPoints[color] || dist(point, prevPoints[color]) < dist(selectedPoints[color], prevPoints[color]))
           selectedPoints[color] = point;
+      });
+
+      // check the travel distance and interpret action differently based on that
+      Object.keys(selectedPoints).forEach(color => {
+        const point = selectedPoints[color];
+        const prevPoint = prevPoints[color];
+
+        // moving too fast doesn't count as moving eh
+        if (point && prevPoint && dist(point, prevPoint) < threshold * threshold) {
+          const { onMove } = this.props;
+          onMove && onMove({ x: point.x - prevPoint.x, y: point.y - prevPoint.y, color: point.color });
+        }
       });
 
       Object.keys(selectedPoints).forEach(color => {

@@ -20,7 +20,6 @@ export class Sim extends Component {
       points: [],
     };
     this._onMouseMove = this.onMouseMove.bind(this);
-    this._onMouseClick = this.onMouseClick.bind(this);
 
     this.lastX = 0;
     this.lastY = 0;
@@ -50,10 +49,6 @@ export class Sim extends Component {
     x /= width;
     y /= height;
     this.hover({ x, y });
-  }
-
-  onMouseClick(e) {
-    e.stopPropagation();
     this.props.onSend({ x: this.lastX, y: this.lastY });
   }
 
@@ -70,7 +65,6 @@ export class Sim extends Component {
             width: width,
             height: height,
           }}
-          onClick={this._onMouseClick}
           onMouseMove={this._onMouseMove}
         >
           <div
@@ -93,7 +87,6 @@ export class Sim extends Component {
             </div>
           ))}
         </div>
-        <div className="instructions">Click to send events</div>
       </div>
     );
   }
