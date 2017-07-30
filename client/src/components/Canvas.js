@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import React3 from 'react-three-renderer';
 import * as THREE from 'three';
-import { project } from '../geometry';
+import { project, convert } from '../geometry';
 
 import './Canvas.css';
 
@@ -213,6 +213,7 @@ export class Canvas extends Component {
     // width = window.innerWidth
     // height = window.innerHeight
 
+    console.log('fog color:', this.fog.color);
     return (
       <React3
         antialias
