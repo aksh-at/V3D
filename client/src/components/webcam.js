@@ -13,6 +13,8 @@ export class Webcam extends Component {
       yellow: getColorConstraints('yellow'),
       purple: getColorConstraints('purple'),
     };
+
+    this.interval = null;
   }
 
   componentDidMount() {
@@ -72,6 +74,15 @@ export class Webcam extends Component {
         context.fill();
       });
     });
+
+    this.interval = setInterval(() => {
+      this.props.onSend && prevPoints.purple && this.props.onSend(prevPoints.purple);
+    });
+  }
+
+  componentWillUnmount() {
+    this.interval && clearInterval(this.interval);
+    this.interval = null;
   }
 
   render() {
